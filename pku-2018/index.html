@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Winter Camp Min-Max题目大意给定 $n$ 个节点的二叉树，给定叶节点的权值，非叶节点的权值有 $p$ 的概率为子节点的最大值，否则为子节点的最小值。 求根节点取到任意值的概率。 $1\le n\le 3\times 10^5$。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PKUSC &amp; PKUWC 2018 选解">
+<meta property="og:url" content="http://example.com/pku-2018/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="Winter Camp Min-Max题目大意给定 $n$ 个节点的二叉树，给定叶节点的权值，非叶节点的权值有 $p$ 的概率为子节点的最大值，否则为子节点的最小值。 求根节点取到任意值的概率。 $1\le n\le 3\times 10^5$。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-03T13:04:53.000Z">
+<meta property="article:modified_time" content="2022-03-03T13:11:07.411Z">
+<meta property="article:author" content="Henry Chen">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/pku-2018/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>PKUSC & PKUWC 2018 选解 | Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/pku-2018/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Henry Chen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          PKUSC & PKUWC 2018 选解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-03-03 21:04:53 / 修改时间：21:11:07" itemprop="dateCreated datePublished" datetime="2022-03-03T21:04:53+08:00">2022-03-03</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Winter-Camp-Min-Max"><a href="#Winter-Camp-Min-Max" class="headerlink" title="Winter Camp Min-Max"></a>Winter Camp Min-Max</h2><h3 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h3><p>给定 $n$ 个节点的二叉树，给定叶节点的权值，非叶节点的权值有 $p$ 的概率为子节点的最大值，否则为子节点的最小值。</p>
+<p>求根节点取到任意值的概率。</p>
+<p>$1\le n\le 3\times 10^5$。</p>
+<span id="more"></span>
+<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>考虑 DP，设 $f(i,j)$ 表示 $i$ 节点选到 $j$ 的概率，可以从子节点 $l,r$ 转移，有<br>$$<br>f(i,j)=f(l,j)\left(p_i\sum_{k=1}^{j-1}f(r,k)+(1-p_i)\sum^{m}_{k=j+1}f(r,k)\right)+f(r,j)\left(p_i\sum_{k=1}^{j-1}f(l,k)+(1-p_i)\sum^{m}_{k=j+1}f(l,k)\right)<br>$$<br>这样直接转移是 $\mathcal O(n^2)$ 的，考虑优化。</p>
+<p>注意到这些和式都是前缀或后缀和的形式，显然可以在 DFS 的过程中用线段树合并优化，时间复杂度 $\mathcal{O}(n\log n)$。细节较多，可以参见代码。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">SegmentTree</span> &#123;</span></span><br><span class="line">	<span class="keyword">int</span> ls[maxN &lt;&lt; <span class="number">5</span>], rs[maxN &lt;&lt; <span class="number">5</span>], tol;</span><br><span class="line">	Z val[maxN &lt;&lt; <span class="number">5</span>], mul[maxN &lt;&lt; <span class="number">5</span>];</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> mid ((l + r) &gt;&gt; 1)</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">PushUp</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">		val[x] = val[ls[x]] + val[rs[x]];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">Pushdown</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (mul[x].x == <span class="number">1</span>) <span class="keyword">return</span>;</span><br><span class="line">		<span class="keyword">if</span> (ls[x]) mul[ls[x]] *= mul[x], val[ls[x]] *= mul[x];</span><br><span class="line">		<span class="keyword">if</span> (rs[x]) mul[rs[x]] *= mul[x], val[rs[x]] *= mul[x];</span><br><span class="line">		mul[x] = <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">Update</span><span class="params">(<span class="keyword">int</span> &amp;x, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> p, Z w)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (!x) mul[x = ++tol] = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">if</span> (l == r) <span class="keyword">return</span> val[x] = w, <span class="built_in"><span class="keyword">void</span></span>();</span><br><span class="line">		<span class="built_in">Pushdown</span>(x);</span><br><span class="line">		<span class="keyword">if</span> (p &lt;= mid) <span class="built_in">Update</span>(ls[x], l, mid, p, w);</span><br><span class="line">		<span class="keyword">else</span> <span class="built_in">Update</span>(rs[x], mid + <span class="number">1</span>, r, p, w);</span><br><span class="line">		<span class="built_in">PushUp</span>(x);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">int</span> <span class="title">Merge</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> l, <span class="keyword">int</span> r, Z wx, Z wy, Z w)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (x + y == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">if</span> (x == <span class="number">0</span>) &#123;</span><br><span class="line">			mul[y] *= wy, val[y] *= wy;</span><br><span class="line">			<span class="keyword">return</span> y;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (y == <span class="number">0</span>) &#123;</span><br><span class="line">			mul[x] *= wx, val[x] *= wx;</span><br><span class="line">			<span class="keyword">return</span> x;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">Pushdown</span>(x); <span class="built_in">Pushdown</span>(y);</span><br><span class="line">		Z lsx = val[ls[x]], rsx = val[rs[x]], lsy = val[ls[y]], rsy = val[rs[y]];</span><br><span class="line">		ls[x] = <span class="built_in">Merge</span>(ls[x], ls[y], l, mid, wx + (<span class="number">1</span> - w) * rsy, wy + (<span class="number">1</span> - w) * rsx, w);</span><br><span class="line">		rs[x] = <span class="built_in">Merge</span>(rs[x], rs[y], mid + <span class="number">1</span>, r, wx + w * lsy, wy + w * lsx, w);</span><br><span class="line">		<span class="built_in">PushUp</span>(x);</span><br><span class="line">		<span class="keyword">return</span> x;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function">Z <span class="title">Query</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (!x) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">if</span> (l == r) <span class="keyword">return</span> a[l] * val[x] * val[x] * l;</span><br><span class="line">		<span class="built_in">Pushdown</span>(x);</span><br><span class="line">		<span class="keyword">return</span> <span class="built_in">Query</span>(ls[x], l, mid) + <span class="built_in">Query</span>(rs[x], mid + <span class="number">1</span>, r);</span><br><span class="line">	&#125;</span><br><span class="line">&#125; st;</span><br><span class="line"><span class="keyword">int</span> n, m, son[maxN][<span class="number">2</span>], cnt[maxN], rt[maxN];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">DFS</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (!cnt[x]) <span class="keyword">return</span> st.<span class="built_in">Update</span>(rt[x], <span class="number">1</span>, m, w[x].x, <span class="number">1</span>);</span><br><span class="line">	<span class="built_in">DFS</span>(son[x][<span class="number">0</span>]);</span><br><span class="line">	<span class="keyword">if</span> (cnt[x] == <span class="number">1</span>) rt[x] = rt[son[x][<span class="number">0</span>]];</span><br><span class="line">	<span class="keyword">else</span> <span class="built_in">DFS</span>(son[x][<span class="number">1</span>]), rt[x] = st.<span class="built_in">Merge</span>(rt[son[x][<span class="number">0</span>]], rt[son[x][<span class="number">1</span>]], <span class="number">1</span>, m, <span class="number">0</span>, <span class="number">0</span>, w[x]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="function">std::vector&lt;<span class="keyword">int</span>&gt; <span class="title">a</span><span class="params">(<span class="number">1</span>)</span></span>;</span><br><span class="line">	io &gt;&gt; n &gt;&gt; son[<span class="number">0</span>][<span class="number">0</span>];</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>, p; i &lt;= n; i++) &#123;</span><br><span class="line">		io &gt;&gt; p;</span><br><span class="line">		son[p][cnt[p]++] = i;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>, x; i &lt;= n; i++) io &gt;&gt; x, w[i] = x;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">		<span class="keyword">if</span> (cnt[i] &gt; <span class="number">0</span>) w[i] *= <span class="number">796898467</span>;</span><br><span class="line">		<span class="keyword">else</span> a.<span class="built_in">emplace_back</span>(w[i].x);</span><br><span class="line">	&#125;</span><br><span class="line">	std::<span class="built_in">sort</span>(a.<span class="built_in">begin</span>(), a.<span class="built_in">end</span>());</span><br><span class="line">	m = a.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++)</span><br><span class="line">		<span class="keyword">if</span> (cnt[i] == <span class="number">0</span>) w[i] = std::<span class="built_in">lower_bound</span>(a.<span class="built_in">begin</span>(), a.<span class="built_in">end</span>(), w[i].x) - a.<span class="built_in">begin</span>();</span><br><span class="line">	<span class="built_in">DFS</span>(<span class="number">1</span>);</span><br><span class="line">	io &lt;&lt; st.<span class="built_in">Query</span>(rt[<span class="number">1</span>], <span class="number">1</span>, m).x;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Winter-Camp-随机游走"><a href="#Winter-Camp-随机游走" class="headerlink" title="Winter Camp 随机游走"></a>Winter Camp 随机游走</h2><h3 id="题目大意-1"><a href="#题目大意-1" class="headerlink" title="题目大意"></a>题目大意</h3><p>给定 $n$ 个节点的树，$Q$ 次询问，每次给出一个点集 $S$，求从 $x$ 出发随机游走经过点集中的所有点的期望步数。</p>
+<p>$n\le 18$，$Q\le 5\times 10^3$。</p>
+<h3 id="题解-1"><a href="#题解-1" class="headerlink" title="题解"></a>题解</h3><p>首先注意到，题目要求<strong>经过所有点</strong>，不妨考虑 min-max 容斥，即转化为<strong>至少经过一个点</strong>的期望步数，有<br>$$<br>E(\max(S))=\sum_{T\subseteq S}(-1)^{|T|+1}E(\min(T))<br>$$<br>转化后，考虑 DP，设 $f(S,u)$ 表示从 $u$ 出发，经过 $S$ 中至少一个点的期望步数，显然当 $u\in S$ 时，$f(S,u)=0$。当 $u\notin S$ 时，有转移<br>$$<br>f(S,u)=\frac{1}{d_u}\left(f(S,fa_u)+\sum_{v\in son(u)}f(S,v)\right)+1<br>$$<br>其中 $d_u$ 表示点 $u$ 的度数。</p>
+<p>显然这个 DP 有后效性，可以高斯消元解决。但这是一个树上问题，考虑从父亲转移到儿子，设 $f(u)=a_uf(fa_u)+b_u$（将 $f(S,u)$ 简写成 $f(u)$，下同），带入上式可得<br>$$<br>\begin{aligned}<br>f(u)&amp;=\frac 1{d_u}\left(f(fa_u)+\sum_{v\in son(u)}a_vf(u)+b_v\right)\\<br>&amp;=\frac 1{d_u}\left(f(fa_u)+\text{sum}a_uf(u)+\text{sum}b_u\right)<br>\end{aligned}<br>$$<br>把未知项移到左边，有<br>$$<br>(d_u-\text{sum}a_u)f(u)=f(fa_u)+\text{sum}b_u<br>$$<br>整理得到<br>$$<br>f(u)=\frac{1}{d_u-\text{sum}a_u}f(fa_u)+\frac{\text{sum}b_u}{d_u-\text{sum}a_u}<br>$$<br>即<br>$$<br>a_u=\frac{1}{d_u-\text{sum}a_u}\quad b_u=\frac{\text{sum}b_u}{d_u-\text{sum}a_u}<br>$$<br>答案 $f(x)$ 不能从父亲转移，即 $f(x)=b_x$。</p>
+<p>这部分的时间复杂度为 $\mathcal{O}(2^nn\log \bmod)$。</p>
+<p>至此，我们求得了 $(-1)^{|T|+1}\min(T)$，接下来的问题即求子集和，可以直接对 $f$ 做一次 FWT，即可做到 $\mathcal{O}(1)$ 查询。</p>
+<blockquote>
+<p>Tip：为什么这样做是对的？</p>
+<p>考虑或卷积 $c_i=\sum_{i=j|k}a_jb_k$</p>
+<p>设 $\hat a=\mathcal F a$ 表示 $a$ 的 FWT，根据或卷积的 FWT 为乘积，得到 $\hat c_i=\hat a_i\hat b_i$。而或运算相当于子集求并，则 $i$ 的子集都会对 $\hat a_i$ 产生贡献，即 $\hat a_i=\sum_{j\subseteq i}a_j$</p>
+</blockquote>
+<p>总时间复杂度为 $\mathcal{O}(2^nn\log \bmod+\sum |S|)$。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> n, Q, rt;</span><br><span class="line">io &gt;&gt; n &gt;&gt; Q &gt;&gt; rt; rt--;</span><br><span class="line">std::vector&lt;std::vector&lt;<span class="keyword">int</span>&gt;&gt; <span class="built_in">e</span>(n);</span><br><span class="line"><span class="function">std::vector&lt;<span class="keyword">int</span>&gt; <span class="title">deg</span><span class="params">(n)</span></span>;</span><br><span class="line"><span class="function">std::vector&lt;Z&gt; <span class="title">f</span><span class="params">(<span class="number">1</span> &lt;&lt; n)</span></span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>, u, v; i &lt; n; ++i) &#123;</span><br><span class="line">	io &gt;&gt; u &gt;&gt; v; --u; --v;</span><br><span class="line">	++deg[u]; ++deg[v];</span><br><span class="line">	e[u].<span class="built_in">push_back</span>(v);</span><br><span class="line">	e[v].<span class="built_in">push_back</span>(u);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> s = <span class="number">0</span>; s &lt; (<span class="number">1</span> &lt;&lt; n); ++s) &#123;</span><br><span class="line">	<span class="function">std::vector&lt;Z&gt; <span class="title">a</span><span class="params">(n)</span>, <span class="title">b</span><span class="params">(n)</span></span>;</span><br><span class="line">	std::function&lt;<span class="built_in"><span class="keyword">void</span></span>(<span class="keyword">int</span>, <span class="keyword">int</span>)&gt; DFS = [&amp;](<span class="keyword">int</span> u, <span class="keyword">int</span> fa) &#123;</span><br><span class="line">		<span class="keyword">if</span> (s &gt;&gt; u &amp; <span class="number">1</span>) <span class="keyword">return</span>;</span><br><span class="line">		Z _a, _b = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">auto</span> v : e[u]) &#123;</span><br><span class="line">			<span class="keyword">if</span> (v == fa) <span class="keyword">continue</span>;</span><br><span class="line">			<span class="built_in">DFS</span>(v, u);</span><br><span class="line">			_a += a[v], _b += b[v];</span><br><span class="line">		&#125;</span><br><span class="line">		a[u] = <span class="built_in">Z</span>(<span class="number">1</span>) / (<span class="built_in">Z</span>(deg[u]) - _a);</span><br><span class="line">		b[u] = a[u] * (<span class="built_in">Z</span>(_b) + deg[u]);</span><br><span class="line">	&#125;;</span><br><span class="line">	<span class="built_in">DFS</span>(rt, <span class="number">-1</span>);</span><br><span class="line">	<span class="keyword">if</span> (__builtin_popcount(s) &amp; <span class="number">1</span>) f[s] += b[rt];</span><br><span class="line">	<span class="keyword">else</span> f[s] -= b[rt];</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i)</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; (<span class="number">1</span> &lt;&lt; n); j += (<span class="number">1</span> &lt;&lt; (i + <span class="number">1</span>)))</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; (<span class="number">1</span> &lt;&lt; i); ++k)</span><br><span class="line">			f[j | k | (<span class="number">1</span> &lt;&lt; i)] += f[j | k];</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> k, u; Q--;) &#123;</span><br><span class="line">	<span class="keyword">int</span> s = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span> (io &gt;&gt; k; k--;) &#123;</span><br><span class="line">		io &gt;&gt; u;</span><br><span class="line">		s |= (<span class="number">1</span> &lt;&lt; (u - <span class="number">1</span>));</span><br><span class="line">	&#125;</span><br><span class="line">	io &lt;&lt; f[s].x &lt;&lt; <span class="string">&quot;\\n&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="Winter-Camp-猎人杀"><a href="#Winter-Camp-猎人杀" class="headerlink" title="Winter Camp 猎人杀"></a>Winter Camp 猎人杀</h2><h3 id="题目大意-2"><a href="#题目大意-2" class="headerlink" title="题目大意"></a>题目大意</h3><p>有 $n$ 个猎人，第 $i$ 个人的权值为 $w_i$，依次对猎人射击，第 $i$ 个人被击杀的概率是 $\frac{w_i}{\sum_{k\in S}w_k}$，其中 $S$ 表示当前存活猎人的集合。</p>
+<p>求 $n-1$ 次射杀后，一号猎人存活的概率。</p>
+<p>$\sum w\le 10^5$。</p>
+<h3 id="题解-2"><a href="#题解-2" class="headerlink" title="题解"></a>题解</h3><p>考虑一次射击时假定所有人都活着，一直打，直到打到了确实活的人为止，这样做显然对最终的答案没有影响（活人之间的概率比没有改变）。</p>
+<p>则考虑容斥，设 $f(S)$ 表示 $S$ 中的人都死在 $1$ 之后的概率，即开无限枪，不能打到 $S\cup\{1\}$ 中的人，直到打到 $1$ 为止。则<br>$$<br>f(S)=\sum_{i\ge 0}\left(\frac{\sum_{k\in (U\setminus (S\cup\{1\}))}w_k}{\sum w}\right)^i\frac{w_1}{\sum w}<br>$$<br>根据等比数列求和公式，得到<br>$$<br>f(S)=\frac{1-\lim\limits_{x\to \infty}\left(\frac{\sum_{k\in (U\setminus (S\cup\{1\}))}w_k}{\sum w}\right)^x}{1-\frac{\sum_{k\in (U\setminus (S\cup\{1\}))}w_k}{\sum w}}\frac{w_1}{\sum w}=\frac{1}{\frac{\sum_{k\in (S\cup\{1\})}w_k}{\sum w}}\frac{w_1}{\sum w}=\frac{w_1}{\sum_{k\in (S\cup\{1\})}w_k}<br>$$<br>则答案为<br>$$<br>\sum_{S\subseteq U\setminus\{1\}}(-1)^{|S|}\frac{w_1}{\sum_{k\in (S\cup\{1\})}w_k}<br>$$<br>注意到数据范围中限制了 $\sum w$，考虑枚举这个东西，即求<br>$$<br>\sum_{i=0}^{\sum w-w_1}\frac{w_1}{i+w_1}\sum_{\sum_{k\in S}w_k=i}(-1)^{|S|}<br>$$<br>右半部分是非常棘手的，但理智分析一下可以发现，右边的和式即<br>$$<br>[x^i]\prod_{i=2}^n 1-x^{w_i}<br>$$<br>感性理解一下，对于奇数个元素的集合，其对答案的贡献是 $-1$，而奇数个 $-x$ 相乘，其系数也为 $-1$，偶数同理。</p>
+<p>至此，这个积式可以分治加 NTT 在 $\mathcal O(n\log ^2n)$ 求得，总时间复杂度为 $\mathcal O(n+\sum w\log^2\sum w)$。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> n;</span><br><span class="line">io &gt;&gt; n;</span><br><span class="line"><span class="function">std::vector&lt;<span class="keyword">int</span>&gt; <span class="title">w</span><span class="params">(n + <span class="number">1</span>)</span></span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) io &gt;&gt; w[i];</span><br><span class="line">std::function&lt;<span class="built_in">Poly</span>(<span class="keyword">int</span>, <span class="keyword">int</span>)&gt; Solve= [&amp;](<span class="keyword">int</span> l, <span class="keyword">int</span> r) -&gt; Poly &#123;</span><br><span class="line">	<span class="keyword">if</span> (l == r) &#123;</span><br><span class="line">		Poly _(w[l] + <span class="number">1</span>);</span><br><span class="line">		_[<span class="number">0</span>] = <span class="number">1</span>; _[w[l]] = P - <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">return</span> _;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">	Poly a = <span class="built_in">Solve</span>(l, mid), b = <span class="built_in">Solve</span>(mid + <span class="number">1</span>, r);</span><br><span class="line">	<span class="keyword">return</span> a * b;</span><br><span class="line">&#125;;</span><br><span class="line">Poly f = <span class="built_in">Solve</span>(<span class="number">2</span>, n);</span><br><span class="line"><span class="keyword">int</span> s = std::<span class="built_in">accumulate</span>(w.<span class="built_in">begin</span>(), <span class="built_in">wend</span>(), <span class="number">0</span>);</span><br><span class="line">Z ans = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= s; ++i) ans += f[i] * w[<span class="number">1</span>] / (w[<span class="number">1</span>] + i);</span><br><span class="line">io &lt;&lt; ans.x;</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="Summer-Camp-神仙的游戏"><a href="#Summer-Camp-神仙的游戏" class="headerlink" title="Summer Camp 神仙的游戏"></a>Summer Camp 神仙的游戏</h2><h3 id="题目大意-3"><a href="#题目大意-3" class="headerlink" title="题目大意"></a>题目大意</h3><p>给定由 $\texttt{0 1 ?}$ 组成的字符串 $s$，$\texttt{?}$ 可以任意替换成 $\texttt{0}$ 或 $\texttt{1}$。求在替换过后，$\forall i\in [1,n]$，长度为 $i$ 的前缀能否成为 border。</p>
+<p>$|s|\le 5\times 10^5$。</p>
+<h3 id="题解-3"><a href="#题解-3" class="headerlink" title="题解"></a>题解</h3><p>一个长度为 $p$ 的前缀为 border $\iff \forall[1,p],s_i=s_{|s|-p+i}\iff \forall i,j\in [1,n]\land i\equiv j\pmod{n-p},s_i=s_j\iff \forall i,j\in [1,n]\land |i-j|\ |n-p, s_i=s_j$</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/cf-edu-123/" rel="prev" title="Codeforces Educational Round 123">
+      <i class="fa fa-chevron-left"></i> Codeforces Educational Round 123
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/cf-1119h/" rel="next" title="CodeForces Global Round 2 H">
+      CodeForces Global Round 2 H <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Winter-Camp-Min-Max"><span class="nav-text">Winter Camp Min-Max</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E5%A4%A7%E6%84%8F"><span class="nav-text">题目大意</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3"><span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Winter-Camp-%E9%9A%8F%E6%9C%BA%E6%B8%B8%E8%B5%B0"><span class="nav-text">Winter Camp 随机游走</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E5%A4%A7%E6%84%8F-1"><span class="nav-text">题目大意</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-1"><span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Winter-Camp-%E7%8C%8E%E4%BA%BA%E6%9D%80"><span class="nav-text">Winter Camp 猎人杀</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E5%A4%A7%E6%84%8F-2"><span class="nav-text">题目大意</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-2"><span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summer-Camp-%E7%A5%9E%E4%BB%99%E7%9A%84%E6%B8%B8%E6%88%8F"><span class="nav-text">Summer Camp 神仙的游戏</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E5%A4%A7%E6%84%8F-3"><span class="nav-text">题目大意</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-3"><span class="nav-text">题解</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Henry Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">赣ICP备2021010298号 </a>
+      <img src="/images/beian.png" style="display: inline-block;">
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Henry Chen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '3c3c9f872bfe11efa50d',
+      clientSecret: '756c743d23b64daf90b7fc9ec1104f968a743380',
+      repo        : 'hexo-comment',
+      owner       : 'Henry-Chen0227',
+      admin       : ['Henry-Chen0227'],
+      id          : '7a9f77aacbe7346ed4a6f7bfc0004f89',
+        language: 'zh-CN',
+      distractionFreeMode: false
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

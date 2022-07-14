@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="模板">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NOIP 出题模板（Tex）">
+<meta property="og:url" content="http://example.com/noip-template/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="模板">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-11T13:15:22.000Z">
+<meta property="article:modified_time" content="2022-04-11T13:23:38.297Z">
+<meta property="article:author" content="Henry Chen">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/noip-template/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>NOIP 出题模板（Tex） | Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/noip-template/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Henry Chen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NOIP 出题模板（Tex）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-04-11 21:15:22 / 修改时间：21:23:38" itemprop="dateCreated datePublished" datetime="2022-04-11T21:15:22+08:00">2022-04-11</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>模板</p>
+<span id="more"></span>
+<figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\documentclass</span>[fontset=windows,12pt,a4paper,UTF8]&#123;ctexart&#125;</span><br><span class="line"><span class="keyword">\usepackage</span>&#123;fancyhdr&#125;</span><br><span class="line"><span class="keyword">\usepackage</span>&#123;fontspec&#125;</span><br><span class="line"><span class="keyword">\usepackage</span>&#123;geometry&#125;</span><br><span class="line"><span class="keyword">\usepackage</span>&#123;graphicx&#125;</span><br><span class="line"><span class="keyword">\usepackage</span>[colorlinks]&#123;hyperref&#125;</span><br><span class="line"><span class="keyword">\usepackage</span>&#123;listings&#125;</span><br><span class="line"><span class="keyword">\usepackage</span>&#123;makecell&#125;</span><br><span class="line"><span class="keyword">\usepackage</span>&#123;multirow&#125;</span><br><span class="line"><span class="keyword">\usepackage</span>&#123;tabularx&#125;</span><br><span class="line"><span class="keyword">\geometry</span>&#123;left=2.54cm,right=2.54cm,top=2.54cm,bottom=2.54cm&#125;</span><br><span class="line"><span class="keyword">\providecommand</span>&#123;<span class="keyword">\tightlist</span>&#125;&#123;<span class="keyword">\setlength</span>&#123;<span class="keyword">\itemsep</span>&#125;&#123;0pt&#125;<span class="keyword">\setlength</span>&#123;<span class="keyword">\parskip</span>&#125;&#123;0pt&#125;&#125;</span><br><span class="line"><span class="keyword">\providecommand</span>&#123;<span class="keyword">\sub</span>&#125;[1]&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="built_in">$</span> <span class="built_in">$</span> <span class="keyword">\\</span></span><br><span class="line">	<span class="keyword">\fontsize</span>&#123;13pt&#125;&#123;24pt&#125;<span class="keyword">\selectfont</span><span class="keyword">\textbf</span>&#123;【<span class="params">#1</span>】&#125;</span><br><span class="line">	<span class="keyword">\normalsize</span></span><br><span class="line">	<span class="keyword">\phantomsection</span></span><br><span class="line">	<span class="keyword">\addcontentsline</span>&#123;toc&#125;&#123;subsection&#125;&#123;<span class="params">#1</span>&#125;<span class="built_in">$</span> <span class="built_in">$</span><span class="keyword">\vspace</span>*&#123;12pt&#125;<span class="keyword">\par</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">\providecommand</span>&#123;<span class="keyword">\bfzh</span>&#125;[1]&#123;<span class="keyword">\CJKunderdot</span>&#123;<span class="keyword">\textbf</span>&#123;<span class="params">#1</span>&#125;&#125;&#125;</span><br><span class="line"><span class="keyword">\providecommand</span>&#123;<span class="keyword">\bfcd</span>&#125;[1]&#123;<span class="keyword">\emph</span>&#123;<span class="keyword">\textbf</span>&#123;<span class="params">#1</span>&#125;&#125;&#125;</span><br><span class="line"><span class="keyword">\providecommand</span>&#123;<span class="keyword">\problem</span>&#125;[2]&#123;</span><br><span class="line">	<span class="keyword">\newpage</span></span><br><span class="line">	<span class="keyword">\pagestyle</span>&#123;fancy&#125;</span><br><span class="line">	<span class="keyword">\lhead</span>&#123;<span class="keyword">\footnotesize</span><span class="keyword">\CName</span>&#125; <span class="keyword">\rhead</span>&#123;<span class="keyword">\footnotesize</span> <span class="keyword">\TestName</span> <span class="keyword">\ </span><span class="params">#1</span>（<span class="params">#2</span>）&#125;</span><br><span class="line">	<span class="keyword">\cfoot</span>&#123;<span class="keyword">\footnotesize</span> 第 <span class="keyword">\thepage</span> 页 <span class="keyword">\qquad</span> 共 <span class="keyword">\tpage</span> <span class="keyword">\color</span>&#123;black&#125; 页&#125;</span><br><span class="line">	<span class="keyword">\phantomsection</span></span><br><span class="line">	<span class="keyword">\addcontentsline</span>&#123;toc&#125;&#123;section&#125;&#123;<span class="params">#1</span>（<span class="params">#2</span>）&#125;</span><br><span class="line">	<span class="keyword">\begin</span>&#123;center&#125;</span><br><span class="line">		<span class="keyword">\fontsize</span>&#123;18pt&#125;&#123;24pt&#125;</span><br><span class="line">        <span class="keyword">\selectfont</span><span class="keyword">\textbf</span>&#123;<span class="params">#1</span>&#125;（<span class="params">#2</span>）</span><br><span class="line">    <span class="keyword">\end</span>&#123;center&#125;</span><br><span class="line">	<span class="keyword">\normalsize</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">\lstset</span>&#123;</span><br><span class="line">	basicstyle=&#123;<span class="keyword">\color</span>&#123;black&#125;<span class="keyword">\fontspec</span>&#123;Consolas&#125;&#125;,</span><br><span class="line">	numberstyle=&#123;<span class="keyword">\footnotesize</span><span class="keyword">\color</span>[RGB]&#123;128,128,128&#125;<span class="keyword">\fontspec</span>&#123;Consolas&#125;&#125;,</span><br><span class="line">    keywordstyle=&#123;<span class="keyword">\color</span>&#123;blue&#125;<span class="keyword">\fontspec</span>&#123;Consolas&#125;&#125;,</span><br><span class="line">	rulecolor=<span class="keyword">\color</span>&#123;blue&#125;,</span><br><span class="line">	numbers=left,</span><br><span class="line">	frame=single,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">\setmonofont</span>&#123;Consolas&#125;</span><br><span class="line"><span class="keyword">\def</span><span class="keyword">\CName</span>&#123;Name&#125;</span><br><span class="line"><span class="keyword">\def</span><span class="keyword">\TestName</span>&#123;第一试&#125;</span><br><span class="line"><span class="keyword">\def</span><span class="keyword">\CAName</span>&#123;A&#125;</span><br><span class="line"><span class="keyword">\def</span><span class="keyword">\AName</span>&#123;a&#125;</span><br><span class="line"><span class="keyword">\def</span><span class="keyword">\CBName</span>&#123;Boy&#125;</span><br><span class="line"><span class="keyword">\def</span><span class="keyword">\BName</span>&#123;boy&#125;</span><br><span class="line"><span class="keyword">\def</span><span class="keyword">\CEName</span>&#123;Third&#125;</span><br><span class="line"><span class="keyword">\def</span><span class="keyword">\EName</span>&#123;third&#125;</span><br><span class="line"><span class="keyword">\def</span><span class="keyword">\tpage</span>&#123;<span class="keyword">\color</span>&#123;blue&#125;&#123;5&#125; &#125;</span><br><span class="line"><span class="keyword">\begin</span>&#123;document&#125;</span><br><span class="line">	<span class="keyword">\pagestyle</span>&#123;fancy&#125;</span><br><span class="line">	<span class="keyword">\lhead</span>&#123;<span class="keyword">\footnotesize</span> <span class="keyword">\CName</span>&#125; <span class="keyword">\rhead</span>&#123;<span class="keyword">\footnotesize</span><span class="keyword">\TestName</span>&#125;</span><br><span class="line">	<span class="keyword">\cfoot</span>&#123;<span class="keyword">\footnotesize</span> 第 <span class="keyword">\thepage</span> 页 <span class="keyword">\qquad</span> 共 <span class="keyword">\color</span>&#123;blue&#125;<span class="keyword">\tpage</span> <span class="keyword">\color</span>&#123;black&#125; 页&#125;</span><br><span class="line">	<span class="keyword">\thispagestyle</span>&#123;empty&#125;</span><br><span class="line">	<span class="keyword">\begin</span>&#123;center&#125;</span><br><span class="line">		<span class="keyword">\fontsize</span>&#123;22pt&#125;&#123;24pt&#125;<span class="keyword">\selectfont</span><span class="keyword">\textbf</span>&#123;<span class="keyword">\CName</span>&#125;<span class="keyword">\vspace</span>&#123;9pt&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">\fontsize</span>&#123;24pt&#125;&#123;24pt&#125;<span class="keyword">\selectfont</span> CCF NOI 2021<span class="keyword">\vspace</span>&#123;6pt&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">\fontsize</span>&#123;22pt&#125;&#123;24pt&#125;<span class="keyword">\selectfont</span><span class="keyword">\textit</span>&#123;<span class="keyword">\TestName</span>&#125;<span class="keyword">\vspace</span>&#123;6pt&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">\fontsize</span>&#123;15pt&#125;&#123;24pt&#125;<span class="keyword">\selectfont</span><span class="keyword">\textbf</span>&#123;时间：&#125;2021 <span class="keyword">\textbf</span>&#123;年&#125; 1 <span class="keyword">\textbf</span>&#123;月&#125; 1 <span class="keyword">\textbf</span>&#123;日&#125; 08:00 <span class="built_in">$</span><span class="keyword">\sim</span><span class="built_in">$</span> 13:00<span class="keyword">\vspace</span>&#123;12pt&#125;</span><br><span class="line">		<span class="keyword">\normalsize</span></span><br><span class="line">		<span class="keyword">\begin</span>&#123;tabularx&#125;&#123;<span class="keyword">\textwidth</span>&#125;&#123;|X|X|X|X|&#125;</span><br><span class="line">		<span class="keyword">\hline</span></span><br><span class="line">		题目名称 <span class="built_in">&amp;</span> <span class="keyword">\CAName</span> <span class="built_in">&amp;</span> <span class="keyword">\CBName</span> <span class="built_in">&amp;</span> <span class="keyword">\CEName</span> <span class="keyword">\\</span></span><br><span class="line">		<span class="keyword">\hline</span></span><br><span class="line">		题目类型 <span class="built_in">&amp;</span> 交互型 <span class="built_in">&amp;</span> 通信型 <span class="built_in">&amp;</span> 传统型 <span class="keyword">\\</span></span><br><span class="line">		<span class="keyword">\hline</span></span><br><span class="line">		目录 <span class="built_in">&amp;</span> <span class="keyword">\texttt</span>&#123;<span class="keyword">\AName</span>&#125; <span class="built_in">&amp;</span> <span class="keyword">\texttt</span>&#123;<span class="keyword">\BName</span>&#125; <span class="built_in">&amp;</span> <span class="keyword">\texttt</span>&#123;<span class="keyword">\EName</span>&#125; <span class="keyword">\\</span></span><br><span class="line">		<span class="keyword">\hline</span></span><br><span class="line">		可执行文件名 <span class="built_in">&amp;</span> <span class="keyword">\texttt</span>&#123;<span class="keyword">\AName</span>&#125; <span class="built_in">&amp;</span> <span class="keyword">\texttt</span>&#123;<span class="keyword">\BName</span>&#125; <span class="built_in">&amp;</span> <span class="keyword">\texttt</span>&#123;<span class="keyword">\EName</span>&#125; <span class="keyword">\\</span></span><br><span class="line">		<span class="keyword">\hline</span></span><br><span class="line">		输入文件名 <span class="built_in">&amp;</span> <span class="keyword">\texttt</span>&#123;<span class="keyword">\AName</span>.in&#125; <span class="built_in">&amp;</span> <span class="keyword">\texttt</span>&#123;<span class="keyword">\BName</span>.in&#125; <span class="built_in">&amp;</span> <span class="keyword">\texttt</span>&#123;<span class="keyword">\EName</span>.in&#125; <span class="keyword">\\</span></span><br><span class="line">		<span class="keyword">\hline</span></span><br><span class="line">		输出文件名 <span class="built_in">&amp;</span> <span class="keyword">\texttt</span>&#123;<span class="keyword">\AName</span>.out&#125; <span class="built_in">&amp;</span> <span class="keyword">\texttt</span>&#123;<span class="keyword">\BName</span>.out&#125; <span class="built_in">&amp;</span> <span class="keyword">\texttt</span>&#123;<span class="keyword">\EName</span>.out&#125; <span class="keyword">\\</span></span><br><span class="line">		<span class="keyword">\hline</span></span><br><span class="line">		每个测试点时限 <span class="built_in">&amp;</span> 1.0 秒 <span class="built_in">&amp;</span> 1.0 秒 <span class="built_in">&amp;</span> 1.0 秒 <span class="keyword">\\</span></span><br><span class="line">		<span class="keyword">\hline</span></span><br><span class="line">		内存限制 <span class="built_in">&amp;</span> 256 MB <span class="built_in">&amp;</span> 256 MB <span class="built_in">&amp;</span> 512 MB <span class="keyword">\\</span></span><br><span class="line">		<span class="keyword">\hline</span></span><br><span class="line">		子任务数目 <span class="built_in">&amp;</span> 10 <span class="built_in">&amp;</span> 20 <span class="built_in">&amp;</span> 25 <span class="keyword">\\</span></span><br><span class="line">		<span class="keyword">\hline</span></span><br><span class="line">		测试点是否等分 <span class="built_in">&amp;</span> 是 <span class="built_in">&amp;</span> 是 <span class="built_in">&amp;</span> 是 <span class="keyword">\\</span></span><br><span class="line">		<span class="keyword">\hline</span></span><br><span class="line">		<span class="keyword">\end</span>&#123;tabularx&#125;</span><br><span class="line">	<span class="keyword">\end</span>&#123;center&#125;</span><br><span class="line"></span><br><span class="line">	提交源程序文件名</span><br><span class="line">	<span class="keyword">\begin</span>&#123;center&#125;</span><br><span class="line">		<span class="keyword">\begin</span>&#123;tabularx&#125;&#123;<span class="keyword">\textwidth</span>&#125;&#123;|X|X|X|X|&#125;</span><br><span class="line">		<span class="keyword">\hline</span></span><br><span class="line">		对于 C++ 语言 <span class="built_in">&amp;</span> <span class="keyword">\texttt</span>&#123;<span class="keyword">\AName</span>.cpp&#125; <span class="built_in">&amp;</span> <span class="keyword">\texttt</span>&#123;<span class="keyword">\BName</span>.cpp&#125; <span class="built_in">&amp;</span><span class="keyword">\texttt</span>&#123;<span class="keyword">\EName</span>.cpp&#125; <span class="keyword">\\</span></span><br><span class="line">		<span class="keyword">\hline</span></span><br><span class="line">		<span class="keyword">\end</span>&#123;tabularx&#125;</span><br><span class="line">	<span class="keyword">\end</span>&#123;center&#125;</span><br><span class="line"></span><br><span class="line">	编译选项</span><br><span class="line">	<span class="keyword">\begin</span>&#123;center&#125;</span><br><span class="line">		<span class="keyword">\newcolumntype</span>&#123;Y&#125;&#123;&gt;&#123;<span class="keyword">\centering</span><span class="keyword">\arraybackslash</span>&#125;X&#125; </span><br><span class="line">		<span class="keyword">\begin</span>&#123;tabularx&#125;&#123;<span class="keyword">\textwidth</span>&#125;&#123;|&gt;&#123;<span class="keyword">\setlength</span>&#123;<span class="keyword">\hsize</span>&#125;&#123;.471<span class="keyword">\hsize</span>&#125;&#125;X|&gt;&#123;<span class="keyword">\setlength</span>&#123;<span class="keyword">\hsize</span>&#125;&#123;1.529<span class="keyword">\hsize</span>&#125;&#125;Y|&#125;</span><br><span class="line">		<span class="keyword">\hline</span></span><br><span class="line">		对于 C++ 语言 <span class="built_in">&amp;</span> <span class="keyword">\texttt</span>&#123;-O2&#125; <span class="keyword">\\</span></span><br><span class="line">		<span class="keyword">\hline</span></span><br><span class="line">		<span class="keyword">\end</span>&#123;tabularx&#125;</span><br><span class="line">	<span class="keyword">\end</span>&#123;center&#125;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">$</span> <span class="built_in">$</span> <span class="keyword">\\</span></span><br><span class="line">	<span class="keyword">\fontsize</span>&#123;13pt&#125;&#123;24pt&#125;<span class="keyword">\selectfont</span><span class="keyword">\textbf</span>&#123;【注意事项（请仔细阅读）】&#125;</span><br><span class="line">	<span class="keyword">\normalsize</span></span><br><span class="line">	<span class="keyword">\phantomsection</span></span><br><span class="line">	<span class="keyword">\addcontentsline</span>&#123;toc&#125;&#123;subsection&#125;&#123;注意事项（请仔细阅读）&#125;</span><br><span class="line">	<span class="keyword">\begin</span>&#123;enumerate&#125;</span><br><span class="line">		<span class="keyword">\tightlist</span></span><br><span class="line">		<span class="keyword">\item</span> 选手提交的源程序必须存放在<span class="keyword">\bfzh</span>&#123;已建立&#125;好的，且<span class="keyword">\bfzh</span>&#123;带有样例文件和下发文件&#125;的文件夹中，文件夹名称与对应试题英文名一致。</span><br><span class="line">		<span class="keyword">\item</span> 文件名（包括程序名和输入输出文件名）必须使用英文小写。</span><br><span class="line">		<span class="keyword">\item</span> C++ 中函数 main() 的返回值类型必须是 int，值必须为 0。</span><br><span class="line">		<span class="keyword">\item</span> <span class="keyword">\bfzh</span>&#123;对于因未遵守以上规则对成绩造成的影响，相关申诉不予受理&#125;。</span><br><span class="line">		<span class="keyword">\item</span> 若无特殊说明，结果比较方式为<span class="keyword">\bfzh</span>&#123;忽略行末空格、文末回车后的全文比较&#125;。</span><br><span class="line">		<span class="keyword">\item</span> 程序可使用的栈空间大小与该题内存空间限制一致。</span><br><span class="line">		<span class="keyword">\item</span> 在终端中执行命令 <span class="keyword">\texttt</span>&#123;ulimit -s unlimited&#125; 可将当前终端下的栈空间限制放大，但你使用的栈空间大小不应超过题目限制。 </span><br><span class="line">		<span class="keyword">\item</span> 每道题目所提交的<span class="keyword">\bfzh</span>&#123;代码文件大小限制为 100KB&#125;。</span><br><span class="line">		<span class="keyword">\item</span> 若无特殊说明，输入文件与输出文件中同一行的相邻整数均使用一个空格分隔。</span><br><span class="line">		<span class="keyword">\item</span> 输入文件中可能存在行末空格，请选手使用更完善的读入方式（例如 scanf 函数）避免出错。</span><br><span class="line">		<span class="keyword">\item</span> 直接复制 PDF 题面中的多行样例，数据将带有行号，建议选手直接使用对应目录下的样例文件进行测试。</span><br><span class="line">		<span class="keyword">\item</span> 使用 std::deque 等 STL 容器时，请注意其内存空间消耗。</span><br><span class="line">		<span class="keyword">\item</span> 请务必使用题面中规定的的编译参数，保证你的程序在本机能够通过编译。此外<span class="keyword">\bfzh</span>&#123;不允许在程序中手动开启其他编译选项&#125;，一经发现，本题成绩以 0 分处理。</span><br><span class="line">	<span class="keyword">\end</span>&#123;enumerate&#125;</span><br><span class="line">	<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></span><br><span class="line">	<span class="keyword">\problem</span>&#123;<span class="keyword">\CAName</span>&#125;&#123;<span class="keyword">\AName</span>&#125;</span><br><span class="line">	<span class="keyword">\bfzh</span>&#123;这是一道交互题。&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></span><br><span class="line">	<span class="keyword">\problem</span>&#123;<span class="keyword">\CBName</span>&#125;&#123;<span class="keyword">\BName</span>&#125;</span><br><span class="line">	<span class="keyword">\bfzh</span>&#123;这是一道通信题。&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></span><br><span class="line">	<span class="keyword">\problem</span>&#123;<span class="keyword">\CEName</span>&#125;&#123;<span class="keyword">\EName</span>&#125;</span><br><span class="line">	<span class="keyword">\sub</span>&#123;题目描述&#125;</span><br><span class="line">	Test</span><br><span class="line"></span><br><span class="line">	<span class="keyword">\sub</span>&#123;输入格式&#125;</span><br><span class="line">	从文件 <span class="keyword">\bfcd</span>&#123;<span class="keyword">\EName</span>.in&#125; 中读入数据。</span><br><span class="line"></span><br><span class="line">	<span class="keyword">\sub</span>&#123;输出格式&#125;</span><br><span class="line">	输出到文件 <span class="keyword">\bfcd</span>&#123;<span class="keyword">\EName</span>.out&#125; 中。</span><br><span class="line"></span><br><span class="line">	<span class="keyword">\sub</span>&#123;样例 1 输入&#125;</span><br><span class="line">	<span class="keyword">\begin</span>&#123;lstlisting&#125;</span><br><span class="line">7 4</span><br><span class="line">1 2 1</span><br><span class="line">1 3 2</span><br><span class="line">3 4 3</span><br><span class="line">3 5 4</span><br><span class="line">3 6 5</span><br><span class="line">6 7 6</span><br><span class="line">3 2 7 1</span><br><span class="line">5 2 4 7 3 6</span><br><span class="line">2 2 4</span><br><span class="line">1 7</span><br><span class="line">	<span class="keyword">\end</span>&#123;lstlisting&#125;</span><br><span class="line">	<span class="keyword">\sub</span>&#123;样例 1 输出&#125;</span><br><span class="line">	<span class="keyword">\begin</span>&#123;lstlisting&#125;</span><br><span class="line">16</span><br><span class="line">22</span><br><span class="line">6</span><br><span class="line">0</span><br><span class="line">	<span class="keyword">\end</span>&#123;lstlisting&#125;</span><br><span class="line">	<span class="keyword">\sub</span>&#123;样例 1 解释&#125;</span><br><span class="line"></span><br><span class="line">	Test</span><br><span class="line"></span><br><span class="line">	<span class="keyword">\sub</span>&#123;样例 2&#125;</span><br><span class="line">	见选手目录下的 <span class="keyword">\bfcd</span>&#123;<span class="keyword">\EName</span>/<span class="keyword">\EName</span>2.in&#125; 与 <span class="keyword">\bfcd</span>&#123;<span class="keyword">\EName</span>/<span class="keyword">\EName</span>2.ans&#125;。</span><br><span class="line"></span><br><span class="line">	该样例约束与测试点2 <span class="built_in">$</span><span class="keyword">\sim</span><span class="built_in">$</span> 5 一致。</span><br><span class="line">	<span class="keyword">\sub</span>&#123;样例 3&#125;</span><br><span class="line">	见选手目录下的 <span class="keyword">\emph</span>&#123;<span class="keyword">\textbf</span>&#123;<span class="keyword">\EName</span>/<span class="keyword">\EName</span>3.in&#125;&#125; 与 <span class="keyword">\emph</span>&#123;<span class="keyword">\textbf</span>&#123;<span class="keyword">\EName</span>/<span class="keyword">\EName</span>3.ans&#125;&#125;。</span><br><span class="line"></span><br><span class="line">	该样例约束与测试点8 <span class="built_in">$</span><span class="keyword">\sim</span><span class="built_in">$</span> 10 一致。</span><br><span class="line">	<span class="keyword">\sub</span>&#123;样例 4&#125;</span><br><span class="line">	见选手目录下的 <span class="keyword">\bfcd</span>&#123;<span class="keyword">\EName</span>/<span class="keyword">\EName</span>4.in&#125; 与 <span class="keyword">\bfcd</span>&#123;<span class="keyword">\EName</span>/<span class="keyword">\EName</span>4.ans&#125;。</span><br><span class="line"></span><br><span class="line">	该样例约束与测试点11 <span class="built_in">$</span><span class="keyword">\sim</span><span class="built_in">$</span> 13 一致。</span><br><span class="line">	<span class="keyword">\sub</span>&#123;样例 5&#125;</span><br><span class="line">	见选手目录下的 <span class="keyword">\bfcd</span>&#123;<span class="keyword">\EName</span>/<span class="keyword">\EName</span>5.in&#125; 与 <span class="keyword">\bfcd</span>&#123;<span class="keyword">\EName</span>/<span class="keyword">\EName</span>5.ans&#125;。</span><br><span class="line"></span><br><span class="line">	该样例约束与测试点17 <span class="built_in">$</span><span class="keyword">\sim</span><span class="built_in">$</span> 20 一致。</span><br><span class="line">	<span class="keyword">\sub</span>&#123;数据范围&#125;</span><br><span class="line">	本题共 <span class="built_in">$</span>25<span class="built_in">$</span> 个测试点，每个测试点 <span class="built_in">$</span>4<span class="built_in">$</span> 分。每个测试点的数据规模和相关限制见下表。</span><br><span class="line"></span><br><span class="line">	<span class="keyword">\begin</span>&#123;center&#125;</span><br><span class="line">		<span class="keyword">\begin</span>&#123;tabular&#125;&#123; @&#123;&#125;c|c|c|c|c|c@&#123;&#125; &#125;</span><br><span class="line">			<span class="keyword">\Xhline</span>&#123;2pt&#125;</span><br><span class="line">			测试点 <span class="built_in">&amp;</span> <span class="built_in">$</span>n<span class="built_in">$</span> <span class="built_in">&amp;</span> <span class="built_in">$</span>m<span class="built_in">$</span> <span class="built_in">&amp;</span> <span class="built_in">$</span>k<span class="built_in">_</span>i<span class="built_in">$</span> <span class="built_in">&amp;</span> <span class="built_in">$</span><span class="keyword">\sum</span> k<span class="built_in">_</span>i<span class="built_in">$</span> <span class="built_in">&amp;</span> 特殊性质<span class="keyword">\\</span></span><br><span class="line">			<span class="keyword">\Xhline</span>&#123;1.2pt&#125;</span><br><span class="line">			<span class="built_in">$</span>1<span class="built_in">$</span> <span class="built_in">&amp;</span> <span class="built_in">$</span><span class="keyword">\le</span> 5<span class="built_in">$</span> <span class="built_in">&amp;</span> <span class="built_in">$</span><span class="keyword">\le</span> 5<span class="built_in">$</span> <span class="built_in">&amp;</span> <span class="keyword">\multirow</span>&#123;2&#125;&#123;*&#125;&#123;<span class="built_in">$</span><span class="keyword">\le</span> n<span class="built_in">$</span>&#125; <span class="built_in">&amp;</span> <span class="built_in">$</span><span class="keyword">\le</span> 20<span class="built_in">$</span> <span class="built_in">&amp;</span> <span class="keyword">\multirow</span>&#123;3&#125;&#123;*&#125;&#123;无&#125;<span class="keyword">\\</span></span><br><span class="line">			<span class="keyword">\cline</span>&#123;1-3&#125;<span class="keyword">\cline</span>&#123;5-5&#125;</span><br><span class="line">			<span class="built_in">$</span>2<span class="keyword">\sim</span> 5<span class="built_in">$</span> <span class="built_in">&amp;</span> <span class="built_in">$</span><span class="keyword">\le</span> 10<span class="built_in">^</span>3<span class="built_in">$</span> <span class="built_in">&amp;</span> <span class="built_in">$</span><span class="keyword">\le</span> 10<span class="built_in">^</span>3<span class="built_in">$</span> <span class="built_in">&amp;</span> <span class="built_in">&amp;</span> <span class="built_in">$</span><span class="keyword">\le</span> 5<span class="keyword">\times</span> 10<span class="built_in">^</span>3<span class="built_in">$</span><span class="built_in">&amp;</span><span class="keyword">\\</span></span><br><span class="line">			<span class="keyword">\cline</span>&#123;1-5&#125;</span><br><span class="line">			<span class="built_in">$</span>6<span class="keyword">\sim</span> 7<span class="built_in">$</span> <span class="built_in">&amp;</span> <span class="built_in">$</span>=999996<span class="built_in">$</span> <span class="built_in">&amp;</span> <span class="keyword">\multirow</span>&#123;3&#125;&#123;*&#125;&#123;<span class="built_in">$</span><span class="keyword">\le</span> 10<span class="built_in">^</span>5<span class="built_in">$</span>&#125; <span class="built_in">&amp;</span> <span class="built_in">$</span>=2<span class="built_in">$</span> <span class="built_in">&amp;</span> <span class="built_in">$</span><span class="keyword">\le</span> 2<span class="keyword">\times</span> 10<span class="built_in">^</span>5<span class="built_in">$</span><span class="built_in">&amp;</span><span class="keyword">\\</span></span><br><span class="line">			<span class="keyword">\cline</span>&#123;1-2&#125;<span class="keyword">\cline</span>&#123;4-6&#125;</span><br><span class="line">			<span class="built_in">$</span>8<span class="keyword">\sim</span> 10<span class="built_in">$</span> <span class="built_in">&amp;</span> <span class="built_in">$</span>=999997<span class="built_in">$</span> <span class="built_in">&amp;</span> <span class="built_in">&amp;</span> <span class="keyword">\multirow</span>&#123;5&#125;&#123;*&#125;&#123;<span class="built_in">$</span><span class="keyword">\le</span> n<span class="built_in">$</span>&#125; <span class="built_in">&amp;</span> <span class="keyword">\multirow</span>&#123;3&#125;&#123;*&#125;&#123;<span class="built_in">$</span><span class="keyword">\le</span> 5<span class="keyword">\times</span> 10<span class="built_in">^</span>5<span class="built_in">$</span>&#125;<span class="built_in">&amp;</span>A<span class="keyword">\\</span></span><br><span class="line">			<span class="keyword">\cline</span>&#123;1-2&#125;<span class="keyword">\cline</span>&#123;6-6&#125;</span><br><span class="line">			<span class="built_in">$</span>11<span class="keyword">\sim</span> 13<span class="built_in">$</span> <span class="built_in">&amp;</span> <span class="built_in">$</span>=999998<span class="built_in">$</span> <span class="built_in">&amp;</span> <span class="built_in">&amp;</span> <span class="built_in">&amp;</span> <span class="built_in">&amp;</span>B<span class="keyword">\\</span></span><br><span class="line">			<span class="keyword">\cline</span>&#123;1-3&#125;<span class="keyword">\cline</span>&#123;6-6&#125;</span><br><span class="line">			<span class="built_in">$</span>14<span class="keyword">\sim</span> 16<span class="built_in">$</span> <span class="built_in">&amp;</span> <span class="built_in">$</span>=999999<span class="built_in">$</span> <span class="built_in">&amp;</span> <span class="built_in">$</span><span class="keyword">\le</span> 10<span class="built_in">$</span> <span class="built_in">&amp;</span> <span class="built_in">&amp;</span> <span class="built_in">&amp;</span><span class="keyword">\multirow</span>&#123;3&#125;&#123;*&#125;&#123;无&#125;<span class="keyword">\\</span></span><br><span class="line">			<span class="keyword">\cline</span>&#123;1-3&#125;<span class="keyword">\cline</span>&#123;5-5&#125;</span><br><span class="line">			<span class="built_in">$</span>17<span class="keyword">\sim</span> 20<span class="built_in">$</span><span class="built_in">&amp;</span> <span class="built_in">$</span><span class="keyword">\le</span> 2<span class="keyword">\times</span> 10<span class="built_in">^</span>5<span class="built_in">$</span> <span class="built_in">&amp;</span> <span class="built_in">$</span><span class="keyword">\le</span> 10<span class="built_in">^</span>5<span class="built_in">$</span> <span class="built_in">&amp;</span> <span class="built_in">&amp;</span> <span class="built_in">$</span><span class="keyword">\le</span> 10<span class="built_in">^</span>6<span class="built_in">$</span> <span class="built_in">&amp;</span><span class="keyword">\\</span></span><br><span class="line">			<span class="keyword">\cline</span>&#123;1-3&#125;<span class="keyword">\cline</span>&#123;5-5&#125;</span><br><span class="line">			<span class="built_in">$</span>21<span class="keyword">\sim</span> 25<span class="built_in">$</span><span class="built_in">&amp;</span> <span class="built_in">$</span><span class="keyword">\le</span> 10<span class="built_in">^</span>6<span class="built_in">$</span> <span class="built_in">&amp;</span> <span class="built_in">$</span><span class="keyword">\le</span> 10<span class="built_in">^</span>6<span class="built_in">$</span> <span class="built_in">&amp;</span> <span class="built_in">&amp;</span> <span class="built_in">$</span><span class="keyword">\le</span> 5<span class="keyword">\times</span> 10<span class="built_in">^</span>6<span class="built_in">$</span> <span class="built_in">&amp;</span><span class="keyword">\\</span></span><br><span class="line">			<span class="keyword">\Xhline</span>&#123;2pt&#125;</span><br><span class="line">		<span class="keyword">\end</span>&#123;tabular&#125;</span><br><span class="line">	<span class="keyword">\end</span>&#123;center&#125;</span><br><span class="line"></span><br><span class="line">	对于所有数据，保证 <span class="built_in">$</span>1<span class="keyword">\le</span> m,n <span class="keyword">\le</span> 10<span class="built_in">^</span>6<span class="built_in">$</span>，<span class="built_in">$</span>1<span class="keyword">\le</span> k<span class="built_in">_</span>i,u<span class="built_in">_</span>i,v<span class="built_in">_</span>i,p<span class="built_in">_</span>i<span class="keyword">\le</span> n<span class="built_in">$</span>，<span class="built_in">$</span>1<span class="keyword">\le</span> <span class="keyword">\sum</span> k<span class="built_in">_</span>i <span class="keyword">\le</span> 5<span class="keyword">\times</span> 10<span class="built_in">^</span>6<span class="built_in">$</span>，<span class="built_in">$</span>0 <span class="keyword">\le</span> w <span class="keyword">\le</span> 10<span class="built_in">^</span>9<span class="built_in">$</span>。保证图连通，且不存在重边和自环。</span><br><span class="line"></span><br><span class="line">	表中特殊性质栏中变量的含义如下：</span><br><span class="line">	<span class="keyword">\begin</span>&#123;itemize&#125;</span><br><span class="line">		<span class="keyword">\tightlist</span></span><br><span class="line">		<span class="keyword">\item</span> A: <span class="built_in">$</span><span class="keyword">\forall</span> i <span class="keyword">\in</span> [1,n),u<span class="built_in">_</span>i=i,v<span class="built_in">_</span>i=i+1<span class="built_in">$</span>。</span><br><span class="line">		<span class="keyword">\item</span> B: <span class="built_in">$</span><span class="keyword">\forall</span> i <span class="keyword">\in</span> [1,n],u<span class="built_in">_</span>i=1<span class="built_in">$</span>。</span><br><span class="line">	<span class="keyword">\end</span>&#123;itemize&#125;</span><br><span class="line">	<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></span><br><span class="line"><span class="keyword">\end</span>&#123;document&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/cf-1119h/" rel="prev" title="CodeForces Global Round 2 H">
+      <i class="fa fa-chevron-left"></i> CodeForces Global Round 2 H
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/xor-problem/" rel="next" title="Luogu 7526">
+      Luogu 7526 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Henry Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">赣ICP备2021010298号 </a>
+      <img src="/images/beian.png" style="display: inline-block;">
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Henry Chen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '3c3c9f872bfe11efa50d',
+      clientSecret: '756c743d23b64daf90b7fc9ec1104f968a743380',
+      repo        : 'hexo-comment',
+      owner       : 'Henry-Chen0227',
+      admin       : ['Henry-Chen0227'],
+      id          : 'dfdc858cf5ae5e332038d1b33e9d6ab3',
+        language: 'zh-CN',
+      distractionFreeMode: false
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

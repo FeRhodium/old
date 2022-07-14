@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言在动态规划的转移时，我们时常遇到形如 $f(i)&#x3D;\min\limits_{j &lt; i}{f(j)}+w$ 的转移，这种转移可以用单调队列维护以做到线性的复杂度。斜率优化同样也是通过不断删去不合法和不优决策来优化 DP。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="斜率优化">
+<meta property="og:url" content="http://example.com/convex_hull/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="前言在动态规划的转移时，我们时常遇到形如 $f(i)&#x3D;\min\limits_{j &lt; i}{f(j)}+w$ 的转移，这种转移可以用单调队列维护以做到线性的复杂度。斜率优化同样也是通过不断删去不合法和不优决策来优化 DP。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/Convex_1.svg">
+<meta property="og:image" content="http://example.com/images/Convex_2.svg">
+<meta property="og:image" content="http://example.com/images/Lichao.svg">
+<meta property="article:published_time" content="2021-11-06T11:02:43.000Z">
+<meta property="article:modified_time" content="2022-01-09T08:42:53.100Z">
+<meta property="article:author" content="Henry Chen">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Convex_1.svg">
+
+<link rel="canonical" href="http://example.com/convex_hull/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>斜率优化 | Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/convex_hull/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Henry Chen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          斜率优化
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-11-06 19:02:43" itemprop="dateCreated datePublished" datetime="2021-11-06T19:02:43+08:00">2021-11-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-01-09 16:42:53" itemprop="dateModified" datetime="2022-01-09T16:42:53+08:00">2022-01-09</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在动态规划的转移时，我们时常遇到形如 $f(i)=\min\limits_{j &lt; i}{f(j)}+w$ 的转移，这种转移可以用单调队列维护以做到线性的复杂度。斜率优化同样也是通过不断删去不合法和不优决策来优化 DP。</p>
+<span id="more"></span>
+
+<h2 id="例题引入"><a href="#例题引入" class="headerlink" title="例题引入"></a>例题引入</h2><h3 id="HNOI2008-玩具装箱-LG3195"><a href="#HNOI2008-玩具装箱-LG3195" class="headerlink" title="HNOI2008 玩具装箱 LG3195"></a>HNOI2008 玩具装箱 <a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P3195">LG3195</a></h3><h4 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h4><p>有 $n$ 个玩具，价值为 $c_i$ ，要求将这些玩具分段，每段的价值为 $(r-l+\sum\limits_{i=l}^rc_i-L)^2$ 。</p>
+<h4 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h4><p>不难列出下列状态转移方程<br>$$<br>f(i)=\min_{1\le j&lt; i}{f(j)+(i-(j+1)+\sum_{k=j+1}^ic_k-L)^2}<br>$$<br>和式可以用前缀和 $sum$ 求得，设 $L’=L+1$ ，化简可得<br>$$<br>f(i)=\min_{1\le j&lt; i}{f(j)+(i-j+sum(i)-sum(j)-L’)^2}<br>$$<br>设 $s_i=sum_i+i$ ，可得<br>$$<br>f(i)=\min_{1\le j&lt; i}{f(j)+(s(i)-s(j)-L’)^2}<br>$$<br>这样做朴素转移是 $O(n^2)$ 的，考虑优化。</p>
+<h2 id="基本思想"><a href="#基本思想" class="headerlink" title="基本思想"></a>基本思想</h2><p>以题目为例，展开得<br>$$<br>f(i)=\min_{1\le j&lt; i}{f(j)+s(i)^2+L^2+s(j)^2-2s(i)s(j)-2s(i)L’+2s(j)L’}<br>$$<br>将只与 $i$ 有关的项和常数项移到左边，得<br>$$<br>f(i)-s(i)^2-L^2+2s(i)L’=\min_{1\le j&lt; i}{f(j)+s(j)^2-2s(i)s(j)+2s(j)L’}<br>$$<br>至此，我们将这个问题转移到平面直角坐标系中，<strong>将一次转移看作一条线段，将未知量 $j$ 看作线段上的一个点</strong>，将式子转化得<br>$$<br>f(i)-s(i)^2-L^2+2s(i)L’=\min_{1\le j&lt; i}{f(j)+s(j)^2-2(s(i)-L’)s(j)}<br>$$<br>考虑直线的表达式 $y=kx+b$ ，转化得 $b=y-kx$ ，带入到上式中可得<br>$$<br>\begin{cases}<br>x=s(j)\\<br>y=f(j)+s(j)^2\\<br>k=2(s(i)-L’)\\<br>b=f(i)-s(i)^2-L^2+2s(i)L’<br>\end{cases}<br>$$<br>原式转化为<br>$$<br>b=\min{y-kx}<br>$$<br>也就是说，我们想要最小化一条斜率已知的直线的<strong>截距</strong>。</p>
+<p>于是我们可以将这条直线不断向上平移，直到经过决策点集的其中一个点。如下图所示</p>
+<p><img src="/images/Convex_1.svg"></p>
+<p>考虑这些点有哪些性质。</p>
+<p>发现对于任三个横坐标递增的点，会存在 $2$ 种情况，如图所示</p>
+<p><img src="/images/Convex_2.svg"></p>
+<p>我们把形似左图斜率不断增大的点集称为<strong>下凸包</strong>，右图斜率不断减小的点集称为<strong>上凸包</strong>，我们发现，右图的中间点不可能作为最优决策，左图的中间点有可能作为最优决策。所以这道题的决策点集在一个下凸包上。</p>
+<p>不难发现，如果下凸包存在一个点 $j$ ，$ j$ 左侧的斜率 $&lt;$ 当前 $i$ 的斜率 $&lt;$$j$ 右侧的斜率，则 $j$ 为 $i$ 的最优决策点。</p>
+<p>形象化的说，若当前的下凸包集合为 $S$ ，则最优决策点的下标 $p$ 应满足<br>$$<br>\text{slove}(S_{p-1},S_p) &lt; k_i &lt; \text{slove}(S_p, S_{p+1})<br>$$<br>其中 $\text{slove}$ 表示两点之间的斜率。</p>
+<p>由于 $k,x$ 是单调递增的，所以我们可以通过一些方式，及时删掉决策中不优的点，以保证时间复杂度。</p>
+<p>考虑用单调队列 $q$ 优化，$l$ 表示队头， $r$ 表示队尾，实现方式如下：</p>
+<ol>
+<li>队列中先保存 $0$ 这个点，以构成一条线段；</li>
+<li>将 $\text{slove}(q_l,q_{l+1}) &lt; k_i$ 的队头弹出，保证决策最优；</li>
+<li>用队头更新答案；</li>
+<li>将 $\text{slove}(q_{r-1},q_r) &gt; \text{slove}(q_r,i)$ 的队尾弹出，以维护下凸包；</li>
+<li>将 $i$ 压入队尾。</li>
+</ol>
+<p>由于每个点至多入队出队一次，时间复杂度均摊 $O(1)$ ，总时间复杂度 $O(n)$ 。</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> sqr(x) (x) * (x)</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> MAXN = <span class="number">100000</span> + <span class="number">5</span>;</span><br><span class="line"><span class="keyword">int</span> n, L, q[MAXN], l = <span class="number">1</span>, r = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">long</span> <span class="keyword">long</span> s[MAXN], f[MAXN];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">long</span> <span class="keyword">double</span> <span class="title">slope</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1.0</span> * (f[y] + <span class="built_in">sqr</span>(s[y]) - f[x] - <span class="built_in">sqr</span>(s[x])) / (s[y] - s[x]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">read</span>(n, L); L++;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>, x; i &lt;= n; ++i) <span class="built_in">read</span>(x), s[i] = s[i - <span class="number">1</span>] + x + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; ++i) &#123;</span><br><span class="line">        <span class="keyword">while</span> (l &lt; r &amp;&amp; <span class="built_in">slope</span>(q[l], q[l + <span class="number">1</span>]) &lt; <span class="number">2.0</span> * (s[i] - L)) ++l;</span><br><span class="line">        f[i] = f[q[l]] + <span class="built_in">sqr</span>(s[i] - s[q[l]] - L);</span><br><span class="line">        <span class="keyword">while</span> (l &lt; r &amp;&amp; <span class="built_in">slope</span>(q[r - <span class="number">1</span>], q[r]) &gt; <span class="built_in">slope</span>(q[r], i)) --r;</span><br><span class="line">        q[++r] = i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">write</span>(f[n]);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>这个算法应用各元素的比值，从而快速维护 DP 的转移。由于比值类似坐标系中的斜率，我们将这种 DP 优化方式称为<strong>斜率优化</strong>。</p>
+<h2 id="例题"><a href="#例题" class="headerlink" title="例题"></a>例题</h2><h3 id="JSOI2011-柠檬-LG5504"><a href="#JSOI2011-柠檬-LG5504" class="headerlink" title="JSOI2011 柠檬 LG5504"></a>JSOI2011 柠檬 <a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P5504">LG5504</a></h3><h4 id="题目大意-1"><a href="#题目大意-1" class="headerlink" title="题目大意"></a>题目大意</h4><p>有 $n$ 个大小为 $s_i$ 的贝壳，你可以选择一些不交的区间 $[l,r]$ ，对于每个区间，你可以选择一个大小 $s_0$ ，你可以获得 $s_0T^2$ 个柠檬，$ T$ 是 $[l,r]$ 中大小为 $s_0$ 的贝壳的个数。求最多能获得的柠檬数。</p>
+<h4 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h4><p>不难发现，在最优策略中，对于每一个区间 $<a href="l%3Cr">l,r</a>$ ，必定满足 $s_l=s_r$ ，不然一定比分开选不优。</p>
+<p>设 $[1,i]$ 中有 $c_i$ 个大小为 $s_i$ 的贝壳，$ f(i)$ 为 最大获得的柠檬数，可以列出状态转移方程<br>$$<br>f(i)=\max_{1\le j &lt; i,s_i=s_j}{f(j-1)+s_i(c_i-c_j+1)^2}<br>$$<br>同样考虑斜率优化，先化简可得<br>$$<br>f(i)=\max_{1\le j &lt; i,s_i=s_j}{f(j-1)+s_i+2s_ic_i+s_ic_i^2-2s_ic_j-2s_ic_ic_j+s_ic_j^2}<br>$$<br>注意到 $s_i=s_j$ ，可得<br>$$<br>f(i)-s_i-2s_ic_i-s_ic_i^2=\max_{1\le j &lt; i,s_i=s_j}{f(j-1)-2s_jc_j+s_jc_j^2-2s_ic_ic_j}<br>$$<br>此时<br>$$<br>\begin{cases}<br>x=c_j\\<br>y=f(j-1)-2s_jc_j+s_jc_j^2\\<br>k=2s_ic_i\\<br>b=f(i)-s_i-2s_ic_i-s_ic_i^2<br>\end{cases}<br>$$<br>由于这里要维护 $\max$ ，就相当于维护一个上凸包。由于上凸包的斜率是单调递减的，故最优决策点要满足 $\text{slove}(S_p,S_{p+1}) &lt; k_i &lt; \text{slove}(S_{p-1}, S_p)$ ，故将所有满足 $\text{slove}(S_{p-1}, S_p)&lt;k_i$ 的 $p$ 弹出集合，同时 $k$ 是单调递增的，此时集合内的斜率均 $&gt; k_i$ ，取出直接转移即可。发现所有操作均在队尾执行，直接用单调栈维护即可。</p>
+<h2 id="二分维护整个凸包"><a href="#二分维护整个凸包" class="headerlink" title="二分维护整个凸包"></a>二分维护整个凸包</h2><h3 id="SDOI2012-任务安排-LG5785"><a href="#SDOI2012-任务安排-LG5785" class="headerlink" title="SDOI2012 任务安排 LG5785"></a>SDOI2012 任务安排 <a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P5785">LG5785</a></h3><h4 id="题目大意-2"><a href="#题目大意-2" class="headerlink" title="题目大意"></a>题目大意</h4><p>有 $n$ 个任务，第 $i$ 个任务需要 $T_i$ 的时间完成，要求将 $n$ 个任务依次分为若干批，每批开始前需要 $s$ 的时间，完成这批任务的时间为所有任务时间的总和（同一批任务结束时间相同），每个任务的价值为 $C_i$ 乘上该任务完成的时间，求一个最优方案，使总价值最小。</p>
+<h4 id="思路-2"><a href="#思路-2" class="headerlink" title="思路"></a>思路</h4><p>考虑 DP，设 $f(i)$ 表示 $1\sim i$ 的最小总价值。对于新增的一段 $[j+1,i]$ ，要对之后所有段产生贡献，对当前段也产生了贡献，可列出状态转移方程为<br>$$<br>f(i)=\min_{1\le j &lt; i}{f(j)+S\sum_{k=j+1}^nC_k+\sum_{k=1}^iT_k\times\sum_{k=j+1}^iC_k}<br>$$<br>用前缀和代替和式可得<br>$$<br>f(i)=\min_{1\le j &lt; i}{f(j)+S(sumC_n-sumC_j)+sumT_i(sumC_i-sumC_j)}<br>$$<br>这样转移是 $O(n^2)$ ，考虑转化成斜率优化的形式，即<br>$$<br>f(i)-SsumC_n-sumT_isumC_i=\min_{1\le j &lt; i}{f(j)-(S+sumT_i)sumC_j)}<br>$$<br>此时<br>$$<br>\begin{cases}<br>x=sumC_j\\<br>y=f(j)\\<br>k=S+sumT_i\\<br>b=f(i)-SsumC_n-sumT_isumC_i<br>\end{cases}<br>$$</p>
+<p>若 $T_i&gt;0$ ，可以直接套板子解决，而这题中 $T_i$ 可以为负数，说明 $k$ 不是单调递增的，则我们不能通过弹出队头来保证答案最优，并且队头也不一定是最优决策点。</p>
+<p>考虑维护整个凸包，由于下凸包中的斜率是单调递增的，所以可以在凸包中二分找到满足 $\text{slove}(S_{p-1},S_p) &lt; k_i &lt; \text{slove}(S_p, S_{p+1})$ 的点，然后常规从队尾入队即可。</p>
+<h4 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> n, s, dp[MAXN], f[MAXN], t[MAXN], q[MAXN], l = <span class="number">1</span>, r = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">binary_search</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> L = l, R = r;</span><br><span class="line">    <span class="keyword">while</span> (L &lt; R) &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = (L + R) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> ((dp[q[mid + <span class="number">1</span>]] - dp[q[mid]]) &lt;= k * (f[q[mid + <span class="number">1</span>]] - f[q[mid]])) L = mid + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">else</span> R = mid;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> q[L];</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">signed</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">read</span>(n, s);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>, x, y; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="built_in">read</span>(x, y);</span><br><span class="line">        t[i] = t[i - <span class="number">1</span>] + x; f[i] = f[i - <span class="number">1</span>] + y;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> p = <span class="built_in">binary_search</span>(t[i] + s);</span><br><span class="line">        dp[i] = dp[p] + t[i] * (f[i] - f[p]) + s * (f[n] - f[p]);</span><br><span class="line">        <span class="keyword">while</span> (l &lt; r &amp;&amp; (dp[q[r]] - dp[q[r - <span class="number">1</span>]]) * (f[i] - f[q[r]]) &gt;= (dp[i] - dp[q[r]]) * (f[q[r]] - f[q[r - <span class="number">1</span>]])) r--;</span><br><span class="line">        q[++r] = i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">write</span>(dp[n]);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h2><p>在上述例题中，题目均保证了横坐标 $x_i$ 单调，然而在一些毒瘤题中，题目并不保证 $x_i$ 或 $k_i$ 单调，此时需要通过一些奇妙的数据结构维护整个凸包。</p>
+<h3 id="CDQ-分治"><a href="#CDQ-分治" class="headerlink" title="CDQ 分治"></a>CDQ 分治</h3><p>CDQ 分治，即基于时间的分治算法，其基本思想为</p>
+<ul>
+<li>对于区间 $[l,r]$，递归分治 $[l,mid]$ 与 $[mid+1,r]$。</li>
+<li>计算左半区间的修改对右半区间的影响。</li>
+</ul>
+<p>借助 CDQ 分治，我们可以先处理左半区间，维护左半部分的凸包，更新右半部分的答案，再处理右半区间，最后以 $x_i$ 为关键字归并排序。</p>
+<p>至此，维护凸包时我们保证了 $x_i$ 单调，我们就可以用队列/栈维护凸包，同时保证了时间复杂度的正确性。</p>
+<p>对于时间复杂度，有递推式<br>$$<br>T(n)=2T\left(\frac{n}{2}\right)+O(n)<br>$$<br>根据主定理，可得最终时间复杂度为 $\Theta(n\log n)$。</p>
+<h4 id="SDOI2012-基站建设"><a href="#SDOI2012-基站建设" class="headerlink" title="SDOI2012 基站建设"></a><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P2497">SDOI2012 基站建设</a></h4><h5 id="思路-3"><a href="#思路-3" class="headerlink" title="思路"></a>思路</h5><p>根据勾股定理<br>$$<br>(r_{1,i}+r_{2_j})^2=(r_{2,i} - r_{1,j})^2+(x_i-x_j)^2\to \sqrt{r_{2,i}}=\frac{x_i-x_j}{2\sqrt{r_{1,j}}}<br>$$<br>可列出状态转移方程<br>$$<br>f_i=\min_{j&lt;i}{f_j+\frac{x_i-x_j}{2\sqrt{r_{1,j}}}}+v_i<br>$$<br>此时有<br>$$<br>\begin{cases}<br>x=\dfrac{1}{2\sqrt{r_{1,j}}}\\<br>y=f_j-\dfrac{x_j}{2\sqrt{r_{1,j}}}\\<br>k=-x_i\\<br>b=f_i-v_i<br>\end{cases}<br>$$<br>此时 $x$ 不单调，可以用 CDQ 分治维护。</p>
+<h5 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h5><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> MAXN = <span class="number">5000000</span> + <span class="number">5</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n, q[MAXN], _r[MAXN], v[MAXN];</span><br><span class="line"><span class="keyword">long</span> <span class="keyword">long</span> C, x[MAXN];</span><br><span class="line"><span class="keyword">double</span> f[MAXN];</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Query</span> &#123;</span></span><br><span class="line">    <span class="keyword">double</span> x, y;</span><br><span class="line">    <span class="keyword">int</span> id;</span><br><span class="line">&#125; Q[MAXN], tmp[MAXN];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">double</span> <span class="title">slope</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j)</span> </span>&#123;<span class="keyword">return</span> (Q[i].y - Q[j].y) / (Q[i].x - Q[j].x);&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (l == r) <span class="keyword">return</span> <span class="built_in"><span class="keyword">void</span></span>(Q[l].y = f[Q[l].id] - Q[l].x * x[Q[l].id]);</span><br><span class="line">    <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">solve</span>(l, mid);</span><br><span class="line">    <span class="keyword">int</span> R = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = l; i &lt;= mid; i++) &#123;</span><br><span class="line">        <span class="keyword">while</span> (R &gt; <span class="number">1</span> &amp;&amp; <span class="built_in">slope</span>(q[R - <span class="number">1</span>], q[R]) &gt; <span class="built_in">slope</span>(q[R], i)) R--;</span><br><span class="line">        q[++R] = i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = mid + <span class="number">1</span>; i &lt;= r; i++) &#123;</span><br><span class="line">        <span class="keyword">while</span> (R &gt; <span class="number">1</span> &amp;&amp; <span class="built_in">slope</span>(q[R - <span class="number">1</span>], q[R]) &gt; <span class="number">-1.0</span> * x[Q[i].id]) R--;</span><br><span class="line">        f[Q[i].id] = std::<span class="built_in">min</span>(f[Q[i].id], f[Q[q[R]].id] + Q[q[R]].x * (x[Q[i].id] - x[Q[q[R]].id]) + v[Q[i].id]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">solve</span>(mid + <span class="number">1</span>, r);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = l, p1 = l, p2 = mid + <span class="number">1</span>; i &lt;= r; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (p2 &gt; r || (p1 &lt;= mid &amp;&amp; Q[p1].x &lt; Q[p2].x)) tmp[i] = Q[p1++];</span><br><span class="line">        <span class="keyword">else</span> tmp[i] = Q[p2++];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = l; i &lt;= r; i++) Q[i] = tmp[i];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    io &gt;&gt; n &gt;&gt; C;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        io &gt;&gt; x[i] &gt;&gt; _r[i] &gt;&gt; v[i];</span><br><span class="line">        Q[i] = &#123;<span class="number">0.5</span> / <span class="built_in">sqrt</span>(_r[i]), <span class="number">0</span>, i&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; i++) f[i] = <span class="number">2e18</span>;</span><br><span class="line">    f[<span class="number">1</span>] = v[<span class="number">1</span>];</span><br><span class="line">    <span class="built_in">solve</span>(<span class="number">1</span>, n);</span><br><span class="line">    <span class="keyword">double</span> ans = <span class="number">2e18</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++)</span><br><span class="line">        <span class="keyword">if</span> (x[i] + _r[i] &gt;= C) ans = std::<span class="built_in">min</span>(ans, f[i]);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%.3lf&quot;</span>, ans);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="李超线段树"><a href="#李超线段树" class="headerlink" title="李超线段树"></a>李超线段树</h3><p>李超线段树，即标记持久化的线段树，可以在线维护类似下列的问题</p>
+<ul>
+<li>在平面中插入一条线段。</li>
+<li>求一个区间内所有线段纵坐标的最小值。</li>
+<li>对于横坐标 $x$，求所有线段中纵坐标的最小值。</li>
+</ul>
+<h4 id="算法流程"><a href="#算法流程" class="headerlink" title="算法流程"></a>算法流程</h4><p>对于区间 $[l,r]$，定义这个区间的最优线段为</p>
+<ul>
+<li>定义域包括 $[l,r]$。</li>
+<li>在 $x=mid$ 时纵坐标最小。</li>
+</ul>
+<p>在我们在 $[l,r]$ 上插入一条线段 $v$，将其与原最优线段 $u$ 比较，如图所示，分 $4$ 种情况。<br><img src="/images/Lichao.svg"></p>
+<p>设 $x=mid$ 时两条线段的取值分别为 $res_v$ 与 $res_u$，则有</p>
+<ul>
+<li><p>$k_u&lt;k_v\land res_u&gt;res_v$</p>
+<p>如图所示，此时最优线段为 $v$，同时用 $u$ 更新左半区间（右半区间必定为 $v$）</p>
+</li>
+<li><p>$k_u&lt;k_v\land res_u&lt;res_v$</p>
+<p>如图所示，此时最优线段为 $u$，同时用 $v$ 更新右半区间（左半区间必定为 $u$）</p>
+</li>
+<li><p>$k_u&gt;k_v\land res_u&gt;res_v$</p>
+<p>如图所示，此时最优线段为 $v$，同时用 $u$ 更新右半区间（左半区间必定为 $v$）</p>
+</li>
+<li><p>$k_u&gt;k_v\land res_u&lt;res_v$</p>
+<p>如图所示，此时最优线段为 $u$，同时用 $v$ 更新左半区间（右半区间必定为 $u$）</p>
+</li>
+</ul>
+<p>此外对于 $k_u=k_v$，只需比较 $u$ 与 $v$ 的截距即可。</p>
+<p>在查询时，不断更新当前区间最优值，并向下递归即可。</p>
+<p>关于时间复杂度，由于一个区间会被分成 $O(\log n)$ 个区间，每个区间需要 $\Theta(\log n)$ 修改，所以总时间时间复杂度为 $O(n\log^2 n)$。</p>
+<h4 id="代码-3"><a href="#代码-3" class="headerlink" title="代码"></a>代码</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//LG 4097</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Line</span> &#123;</span></span><br><span class="line">    <span class="keyword">double</span> k, b;</span><br><span class="line">    <span class="keyword">int</span> id;</span><br><span class="line">    <span class="built_in">Line</span>(): <span class="built_in">k</span>(<span class="number">0</span>), <span class="built_in">b</span>(<span class="number">0</span>), <span class="built_in">id</span>(<span class="number">0</span>) &#123;&#125;</span><br><span class="line">    <span class="built_in">Line</span>(<span class="keyword">int</span> x1, <span class="keyword">int</span> y1, <span class="keyword">int</span> x2, <span class="keyword">int</span> y2, <span class="keyword">int</span> _id) &#123;</span><br><span class="line">        id = _id;</span><br><span class="line">        <span class="keyword">if</span> (x1 == x2) &#123;</span><br><span class="line">            k = <span class="number">0</span>;</span><br><span class="line">            b = std::<span class="built_in">max</span>(y1, y2);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            k = <span class="number">1.0</span> * (y1 - y2) / (x1 - x2);</span><br><span class="line">            b = y1 - k * x1;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">double</span> <span class="title">calc</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> k * x + b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function">std::pair&lt;<span class="keyword">double</span>, <span class="keyword">int</span>&gt; <span class="title">pmax</span><span class="params">(std::pair&lt;<span class="keyword">double</span>, <span class="keyword">int</span>&gt; a, std::pair&lt;<span class="keyword">double</span>, <span class="keyword">int</span>&gt; b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (a.first &gt; b.first) <span class="keyword">return</span> a;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (a.first &lt; b.first) <span class="keyword">return</span> b;</span><br><span class="line">    <span class="keyword">return</span> a.second &lt; b.second ? a : b;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Li_Chao_Segment_Tree</span> &#123;</span></span><br><span class="line">    Line s[<span class="number">160010</span>];</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> mid ((l + r) &gt;&gt; 1)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> lson (x &lt;&lt; 1)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> rson (x &lt;&lt; 1 | 1)</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> L, <span class="keyword">int</span> R, Line v)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (l &gt; R || r &lt; L) <span class="keyword">return</span>;</span><br><span class="line">        Line u = s[x];</span><br><span class="line">        <span class="keyword">double</span> resu = u.<span class="built_in">calc</span>(mid), resv = v.<span class="built_in">calc</span>(mid);</span><br><span class="line">        <span class="keyword">if</span> (L &lt;= l &amp;&amp; r &lt;= R) &#123;</span><br><span class="line">            <span class="keyword">if</span> (l == r) &#123;</span><br><span class="line">                <span class="keyword">if</span> (resv &gt; resu) s[x] = v;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (u.k &lt; v.k) &#123;</span><br><span class="line">                <span class="keyword">if</span> (resv &gt; resu) &#123;</span><br><span class="line">                    s[x] = v;</span><br><span class="line">                    <span class="built_in">insert</span>(lson, l, mid, L, R, u);</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="built_in">insert</span>(rson, mid + <span class="number">1</span>, r, L, R, v);</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (u.k &gt; v.k) &#123;</span><br><span class="line">                <span class="keyword">if</span> (resv &gt; resu) &#123;</span><br><span class="line">                    s[x] = v;</span><br><span class="line">                    <span class="built_in">insert</span>(rson, mid + <span class="number">1</span>, r, L, R, u);</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="built_in">insert</span>(lson, l, mid, L, R, v);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (v.b &gt; u.b) s[x] = v;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">insert</span>(lson, l, mid, L, R, v);</span><br><span class="line">        <span class="built_in">insert</span>(rson, mid + <span class="number">1</span>, r, L, R, v);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">std::pair&lt;<span class="keyword">double</span>, <span class="keyword">int</span>&gt; <span class="title">query</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> u)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (u &lt; l || u &gt; r) <span class="keyword">return</span> &#123;<span class="number">0</span>, <span class="number">0</span>&#125;;</span><br><span class="line">        <span class="keyword">double</span> res = s[x].<span class="built_in">calc</span>(u);</span><br><span class="line">        <span class="keyword">if</span> (l == r) <span class="keyword">return</span> &#123;res, s[x].id&#125;;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">pmax</span>(&#123;res, s[x].id&#125;, <span class="built_in">pmax</span>(<span class="built_in">query</span>(lson, l, mid, u), <span class="built_in">query</span>(rson, mid + <span class="number">1</span>, r, u)));</span><br><span class="line">    &#125;</span><br><span class="line">&#125; st;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    io &gt;&gt; Q;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> op, x1, x2, y1, y2, cnt = <span class="number">0</span>; Q--;) &#123;</span><br><span class="line">        io &gt;&gt; op;</span><br><span class="line">        <span class="keyword">if</span> (op == <span class="number">0</span>) &#123;</span><br><span class="line">            io &gt;&gt; x1;</span><br><span class="line">            x1 = (x1 + ans - <span class="number">1</span>) % P1 + <span class="number">1</span>;</span><br><span class="line">            io &lt;&lt; (ans = st.<span class="built_in">query</span>(<span class="number">1</span>, <span class="number">1</span>, P1, x1).second) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            io &gt;&gt; x1 &gt;&gt; y1 &gt;&gt; x2 &gt;&gt; y2;</span><br><span class="line">            x1 = (x1 + ans - <span class="number">1</span>) % P1 + <span class="number">1</span>;</span><br><span class="line">            x2 = (x2 + ans - <span class="number">1</span>) % P1 + <span class="number">1</span>;</span><br><span class="line">            y1 = (y1 + ans - <span class="number">1</span>) % P2 + <span class="number">1</span>;</span><br><span class="line">            y2 = (y2 + ans - <span class="number">1</span>) % P2 + <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> (x1 &gt; x2) std::<span class="built_in">swap</span>(x1, x2), std::<span class="built_in">swap</span>(y1, y2);</span><br><span class="line">            st.<span class="built_in">insert</span>(<span class="number">1</span>, <span class="number">1</span>, P1, x1, x2, <span class="built_in">Line</span>(x1, y1, x2, y2, ++cnt));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>那么，如何用李超线段树来维护凸包，其优点在于何处，下面给出一道例题。</p>
+<h4 id="CF932F-Escape-Through-Leaf"><a href="#CF932F-Escape-Through-Leaf" class="headerlink" title="CF932F Escape Through Leaf"></a><a target="_blank" rel="noopener" href="https://codeforces.com/contest/932/problem/F">CF932F Escape Through Leaf</a></h4><h5 id="题目大意-3"><a href="#题目大意-3" class="headerlink" title="题目大意"></a>题目大意</h5><p>给定一棵树，根为 $1$，每次操作可以从 $u$ 走到 $v$，获得的价值为 $a_v\times b_u$，且满足 $u$ 在 $v$ 的子树内，求对于每一个终点的最小总代价。</p>
+<p>$n,|a_i|,|b_i|\le 10^5$</p>
+<h5 id="思路-4"><a href="#思路-4" class="headerlink" title="思路"></a>思路</h5><p>首先有一个很显然的 $O(n^2)$ DP，即<br>$$<br>f(u)=\min{f(v)+a_ub_v}\qquad v \in subtree(u)<br>$$</p>
+<p>显然可以斜率优化，但与常规方法不同的是，我们钦定使纵坐标最小，则有<br>$$<br>\begin{cases}<br>x=a_u\\<br>y=f(u)\\<br>k=b_v\\<br>b=f(v)<br>\end{cases}<br>$$<br>这要求我们在每次转移时要插入一条斜率为 $b_v$，截距为 $f(v)$ 的直线，且回溯时将 $v$ 上的线段树合并到 $u$ 上，可以用动态开点李超线段树合并实现。</p>
+<h5 id="代码-4"><a href="#代码-4" class="headerlink" title="代码"></a>代码</h5><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> MAXN = <span class="number">1e5</span> + <span class="number">5</span>;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Line</span> &#123;</span></span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">long</span> k, b;</span><br><span class="line">    <span class="function"><span class="keyword">long</span> <span class="keyword">long</span> <span class="title">calc</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;<span class="keyword">return</span> x * k + b;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">int</span> rt[MAXN];</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">LICHAO_SEGMENT_TREE</span> &#123;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> mid ((l + r) &gt;&gt; 1)</span></span><br><span class="line">    Line s[MAXN &lt;&lt; <span class="number">5</span>];</span><br><span class="line">    <span class="keyword">int</span> ls[MAXN &lt;&lt; <span class="number">5</span>], rs[MAXN &lt;&lt; <span class="number">5</span>], tol;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="keyword">int</span> &amp;x, Line v, <span class="keyword">int</span> l = <span class="number">-1e5</span>, <span class="keyword">int</span> r = <span class="number">1e5</span>)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!x) &#123;</span><br><span class="line">            x = ++tol;</span><br><span class="line">            s[x] = v;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Line u = s[x];</span><br><span class="line">        <span class="keyword">long</span> <span class="keyword">long</span> resu = u.<span class="built_in">calc</span>(mid), resv = v.<span class="built_in">calc</span>(mid);</span><br><span class="line">        <span class="keyword">if</span> (l == r) &#123;</span><br><span class="line">            <span class="keyword">if</span> (resu &gt; resv) s[x] = v;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (u.k &lt; v.k) &#123;</span><br><span class="line">            <span class="keyword">if</span> (resv &lt; resu) &#123;</span><br><span class="line">                s[x] = v;</span><br><span class="line">                <span class="built_in">insert</span>(rs[x], u, mid + <span class="number">1</span>, r);</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="built_in">insert</span>(ls[x], v, l, mid);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (u.k &gt; v.k) &#123;</span><br><span class="line">            <span class="keyword">if</span> (resv &lt; resu) &#123;</span><br><span class="line">                s[x] = v;</span><br><span class="line">                <span class="built_in">insert</span>(ls[x], u, l, mid);</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="built_in">insert</span>(rs[x], v, mid + <span class="number">1</span>, r);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (u.b &gt; v.b) s[x] = v;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">merge</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> l = <span class="number">-1e5</span>, <span class="keyword">int</span> r = <span class="number">1e5</span>)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!x || !y) <span class="keyword">return</span> x ^ y;</span><br><span class="line">        <span class="built_in">insert</span>(x, s[y], l, r);</span><br><span class="line">        ls[x] = <span class="built_in">merge</span>(ls[x], ls[y], l, mid);</span><br><span class="line">        rs[x] = <span class="built_in">merge</span>(rs[x], rs[y], mid + <span class="number">1</span>, r);</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">long</span> <span class="keyword">long</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> p, <span class="keyword">int</span> l = <span class="number">-1e5</span>, <span class="keyword">int</span> r = <span class="number">1e5</span>)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!x) <span class="keyword">return</span> INT64_MAX;</span><br><span class="line">        <span class="keyword">return</span> std::<span class="built_in">min</span>(s[x].<span class="built_in">calc</span>(p),</span><br><span class="line">        p &lt;= mid ? <span class="built_in">query</span>(ls[x], p, l, mid) : <span class="built_in">query</span>(rs[x], p, mid + <span class="number">1</span>, r));</span><br><span class="line">    &#125;</span><br><span class="line">&#125; st;</span><br><span class="line"><span class="keyword">int</span> n, head[MAXN], nxt[MAXN &lt;&lt; <span class="number">1</span>], ver[MAXN &lt;&lt; <span class="number">1</span>], a[MAXN], b[MAXN];</span><br><span class="line"><span class="keyword">long</span> <span class="keyword">long</span> f[MAXN];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">    nxt[++head[<span class="number">0</span>]] = head[u];</span><br><span class="line">    ver[head[u] = head[<span class="number">0</span>]] = v;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> fa = <span class="number">0</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = head[u], v; i; i = nxt[i]) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((v = ver[i]) == fa) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="built_in">dfs</span>(v, u);</span><br><span class="line">        rt[u] = st.<span class="built_in">merge</span>(rt[u], rt[v]);</span><br><span class="line">    &#125;</span><br><span class="line">    f[u] = st.<span class="built_in">query</span>(rt[u], a[u]);</span><br><span class="line">    <span class="keyword">if</span> (f[u] == INT64_MAX) f[u] = <span class="number">0</span>;</span><br><span class="line">    st.<span class="built_in">insert</span>(rt[u], &#123;b[u], f[u]&#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    io &gt;&gt; n;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) io &gt;&gt; a[i];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) io &gt;&gt; b[i];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>, u, v; i &lt; n; i++) &#123;</span><br><span class="line">        io &gt;&gt; u &gt;&gt; v;</span><br><span class="line">        <span class="built_in">add</span>(u, v);</span><br><span class="line">        <span class="built_in">add</span>(v, u);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">dfs</span>(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) io &lt;&lt; f[i] &lt;&lt; <span class="string">&#x27; &#x27;</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过这道例题，可以发现李超线段树可以很好的处理树上的斜率优化 DP，并且不需要满足单调的性质，可拓展性好。</p>
+<p>此外，还可以用平衡树维护凸包，但过程复杂且常数较大，这里不再赘述。</p>
+<h2 id="分段函数"><a href="#分段函数" class="headerlink" title="分段函数"></a>分段函数</h2><h3 id="序列sequence"><a href="#序列sequence" class="headerlink" title="序列sequence"></a><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P4597">序列sequence</a></h3><h4 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h4><p>首先有一个显然的 $O(n^2)$ 的 DP，即<br>$$<br>f(i,j)=\min_{k\le j}{f(i-1,k)}+|a_i-j|<br>$$<br>定义序列函数<br>$$<br>f_i(x)=\begin{cases}<br>0&amp;i=0\\<br>\min\limits_{p\le x}{f_{i-1}(p)}+|a_i-x|&amp;i&gt;0<br>\end{cases}<br>$$<br>则有</p>
+<blockquote>
+<p>$\forall i\in \mathbf{N}^*$，$f_i(x)$ 构成一个下凸包。</p>
+</blockquote>
+<h5 id="证明"><a href="#证明" class="headerlink" title="证明"></a>证明</h5><p>当 $i=1$ 时，$f_1(x)=|a_1-x|$ 为一个分段函数，在 $x=a_1$ 时取得最小值，此时必定构成一个下凸包。</p>
+<p>当 $i&gt;1$ 时，假定 $f_{i-1}(x)$ 构一个下凸包，即证 $f_i(x)$ 构成一个凸包。</p>
+<p>根据 $f(x)$ 的定义，$f_i(x)$ 由一系列一次函数构成，考虑当前一次函数的斜率 $k$ 与 $a_i$ 对一个转移过程中的影响。</p>
+<ul>
+<li><p>$k&lt;0,x\le a_i$</p>
+<p>由于 $f_{i-1}(x)$ 是下凸的，所以当 $k&lt;0$ 时，$f_{i-1}(x)$ 单调递减。此时 $f_{i-1}(x)$ 的前缀最小值在 $x$ 处取到。则有<br>$$<br>f_i(x)=f_{i-1}(x)+a_i-x<br>$$<br>此时，将 $f_{i-1}(x)$ 转化为一次函数的形式，则这个区间上的转移相当于 $k\gets k-1$，即斜率递减 $1$。</p>
+</li>
+<li><p>$k&lt;0,x&gt; a_i$</p>
+<p>同第一种情况，我们得到<br>$$<br>f_i(x)=f_{i-1}(x)-a_i+x<br>$$<br>同样这里相当于 $k\gets k+1$，即斜率递增 $1$。</p>
+</li>
+<li><p>$k\ge 0,x\le a_i$</p>
+<p>当 $k\ge 0$ 时，$f_{i-1}(x)$ 单调不降。此时设 $f_{i-1}(x)$ 的最小值在 $op$ 处取到，设最小值为 $\gamma$。则有<br>$$<br>f_i(x)=\gamma+a_i-x<br>$$<br>对于某一个特定的 $f_{i-1}(x)$，$\gamma$ 唯一，故这里相当于 $k\gets -1$，即将斜率变为 $-1$。</p>
+</li>
+<li><p>$k\ge 0,x &gt; a_i$</p>
+<p>同情况 3，可得<br>$$<br>f_i(x)=\gamma-a_i+x<br>$$</p>
+<p>则 $k\gets 1$，即将斜率变为 $1$。</p>
+</li>
+</ul>
+<p>现在考虑在 $f_{i-1}\to f_i$ 的转移中，可能会出现的情况，如图所示，存在 $2$ 种情况。</p>
+<p>!GRAPH</p>
+<ul>
+<li><p>$a_i &lt; op$</p>
+<p>如图所示，此时的转移会出现情况 1，2，4 这三种。</p>
+<ul>
+<li>对于 $x\in [1, op]$：$x\in[1, a_i]$ 时较小的斜率更小，$x\in (a_i, op]$ 时较大的斜率更大，且必定 $\le 0$。</li>
+<li>对于 $x\in (op, +\infty)$：斜率恒定不变为 $1$，必定大于 $[1,op]$ 中所有斜率不大于 $0$。</li>
+</ul>
+</li>
+<li><p>$a_i \ge op$</p>
+<p>如图所示，此时的转移会出现情况 1，3，4 这三种。</p>
+<ul>
+<li>对于 $x\in [1, op]$：所有斜率递减 $1$，且必定 $&lt; -1$。</li>
+<li>对于 $x\in (op, +\infty)$：$x\in(op, a_i]$ 时，斜率恒定不变为 $-1$，必定大于 $[1,op]$ 中所有斜率小于 $-1$。$x\in (a_i, +\infty)$ 时，斜率恒定不变为 $1$，同样满足条件。</li>
+</ul>
+</li>
+</ul>
+<p>综合以上两种情况，我们可以得出若 $f_{i-1}(x)$ 下凸，则 $f_i(x)$ 下凸。即原命题得证。$\square$</p>
+<p>有这个性质之后我们发现，我们要求 $\min{f_n(x)}$，且对于 $f_{i-1}\to f_i$ 的转移中，斜率 $&gt;0$ 的区间对答案没有贡献，可以直接将这一段舍去，则函数的最小值在 $x$ 最大时取到。</p>
+<p>考虑维护一个堆，存 $f_i(x)$ 的每一个拐点，考虑每次插入 $a_i$ 对答案的影响。</p>
+<ul>
+<li><p>$a_i\ge op$</p>
+<p>此时决策点为 $a_i$，答案不变，将 $a_i$ 插入堆（$f_i(a_i)=f_{i-1}(op)+|a_i-a_i|$）。</p>
+</li>
+<li><p>$a_i&lt;op$</p>
+<p>如图所示，此时由于新决策点 $op’$ 与 $op$ 之间的斜率为 $0$，可以弹出 $op$，直接更新答案（$f_i(op’)=f_i(op)=f_{i-1}(op)+|a_i-op|$）。</p>
+<p>!GRAPH</p>
+</li>
+</ul>
+<p>至此，我们可以用一个及其简洁的代码实现上列过程。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/usaco-07-g3/" rel="next" title="USACO 2007 January Gold T3 Cow School Solution">
+      USACO 2007 January Gold T3 Cow School Solution <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BE%8B%E9%A2%98%E5%BC%95%E5%85%A5"><span class="nav-text">例题引入</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HNOI2008-%E7%8E%A9%E5%85%B7%E8%A3%85%E7%AE%B1-LG3195"><span class="nav-text">HNOI2008 玩具装箱 LG3195</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E5%A4%A7%E6%84%8F"><span class="nav-text">题目大意</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF"><span class="nav-text">思路</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%80%9D%E6%83%B3"><span class="nav-text">基本思想</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-text">代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-text">小结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BE%8B%E9%A2%98"><span class="nav-text">例题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JSOI2011-%E6%9F%A0%E6%AA%AC-LG5504"><span class="nav-text">JSOI2011 柠檬 LG5504</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E5%A4%A7%E6%84%8F-1"><span class="nav-text">题目大意</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF-1"><span class="nav-text">思路</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%88%86%E7%BB%B4%E6%8A%A4%E6%95%B4%E4%B8%AA%E5%87%B8%E5%8C%85"><span class="nav-text">二分维护整个凸包</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SDOI2012-%E4%BB%BB%E5%8A%A1%E5%AE%89%E6%8E%92-LG5785"><span class="nav-text">SDOI2012 任务安排 LG5785</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E5%A4%A7%E6%84%8F-2"><span class="nav-text">题目大意</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF-2"><span class="nav-text">思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-1"><span class="nav-text">代码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95"><span class="nav-text">扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CDQ-%E5%88%86%E6%B2%BB"><span class="nav-text">CDQ 分治</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SDOI2012-%E5%9F%BA%E7%AB%99%E5%BB%BA%E8%AE%BE"><span class="nav-text">SDOI2012 基站建设</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF-3"><span class="nav-text">思路</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-2"><span class="nav-text">代码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%8E%E8%B6%85%E7%BA%BF%E6%AE%B5%E6%A0%91"><span class="nav-text">李超线段树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E6%B5%81%E7%A8%8B"><span class="nav-text">算法流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-3"><span class="nav-text">代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CF932F-Escape-Through-Leaf"><span class="nav-text">CF932F Escape Through Leaf</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E5%A4%A7%E6%84%8F-3"><span class="nav-text">题目大意</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF-4"><span class="nav-text">思路</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-4"><span class="nav-text">代码</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%AE%B5%E5%87%BD%E6%95%B0"><span class="nav-text">分段函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%8F%E5%88%97sequence"><span class="nav-text">序列sequence</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3"><span class="nav-text">题解</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AF%81%E6%98%8E"><span class="nav-text">证明</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Henry Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">赣ICP备2021010298号 </a>
+      <img src="/images/beian.png" style="display: inline-block;">
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Henry Chen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '3c3c9f872bfe11efa50d',
+      clientSecret: '756c743d23b64daf90b7fc9ec1104f968a743380',
+      repo        : 'hexo-comment',
+      owner       : 'Henry-Chen0227',
+      admin       : ['Henry-Chen0227'],
+      id          : 'fbe582e84e874b08934e979672eb9552',
+        language: 'zh-CN',
+      distractionFreeMode: false
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

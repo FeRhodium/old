@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言莫比乌斯反演是数论内容的一个重要的分支，通常用于求一些不好直接求解的数论函数。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="学习笔记——莫比乌斯反演">
+<meta property="og:url" content="http://example.com/mobius/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="前言莫比乌斯反演是数论内容的一个重要的分支，通常用于求一些不好直接求解的数论函数。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-11-28T08:56:29.000Z">
+<meta property="article:modified_time" content="2022-07-10T13:46:12.605Z">
+<meta property="article:author" content="Henry Chen">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/mobius/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>学习笔记——莫比乌斯反演 | Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/mobius/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Henry Chen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          学习笔记——莫比乌斯反演
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-11-28 16:56:29" itemprop="dateCreated datePublished" datetime="2021-11-28T16:56:29+08:00">2021-11-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-10 21:46:12" itemprop="dateModified" datetime="2022-07-10T21:46:12+08:00">2022-07-10</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>莫比乌斯反演是数论内容的一个重要的分支，通常用于求一些不好直接求解的数论函数。</p>
+<span id="more"></span>
+<h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h2><p>若无特别说明，$p$ 表示质数。</p>
+<h3 id="积性函数"><a href="#积性函数" class="headerlink" title="积性函数"></a>积性函数</h3><p>对于一个数论函数 $f(n)$，如果满足 $f(xy)=f(x)f(y)$，其中$\text{gcd}(x,y)=1$，则称 $f(n)$ 为积性函数。</p>
+<h4 id="性质"><a href="#性质" class="headerlink" title="性质"></a>性质</h4><p>若 $f(n), g(n)$ 为积性函数，则下列函数均为积性函数。</p>
+<ul>
+<li>$h(n)=f(n)g(n)$</li>
+<li>$h(n)=f(n^p)$</li>
+<li>$h(n)=\sum\limits_{d|n}f(d)g(\dfrac{n}{d})$</li>
+</ul>
+<h4 id="常见的积性函数"><a href="#常见的积性函数" class="headerlink" title="常见的积性函数"></a>常见的积性函数</h4><ul>
+<li>$1(n) = 1$</li>
+<li>$\epsilon(n)=[n=1]$ （读作 [ˈepsɪlɑːn]）</li>
+<li>$I(n)=n$</li>
+<li>$id_k(n)=n^k$</li>
+<li>$\sigma_k(n)=\sum_{d|n}d^k$</li>
+<li>$$<br>\varphi(n) = n\prod_{p|n}(1-\dfrac{1}{p})<br>$$</li>
+<li>$$<br>\mu(n)=\begin{cases}<br>1&amp;(n=1)\\<br>(-1)^k&amp;n=\prod\limits_{i=1}^k p_i\\<br>0&amp;(\text{otherwise})<br>\end{cases}<br>$$</li>
+</ul>
+<h2 id="数论分块"><a href="#数论分块" class="headerlink" title="数论分块"></a>数论分块</h2><p>对于式子<br>$$<br>\sum_{i=1}^n\left\lfloor\dfrac{n}{i}\right\rfloor<br>$$<br>可以通过分块的方式在 $O(\sqrt{n})$ 求得。<br>发现 $\left\lfloor\dfrac{n}{i}\right\rfloor$ 最多有 $ \sqrt{n}$ 种取值，将相同的$\left\lfloor\dfrac{n}{i}\right\rfloor$一起处理，即设当前块左端点为 $L$，则右端点  $R=\left\lfloor\dfrac{n}{\left\lfloor\dfrac{n}{L}\right\rfloor}\right\rfloor$。</p>
+<h4 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> x = <span class="number">1</span>, gx; x &lt;= n; x = gx + <span class="number">1</span>) &#123;</span><br><span class="line">    gx = n / (n / x);</span><br><span class="line">    ans += (gx - x + <span class="number">1</span>) * (gx + x) / <span class="number">2</span> * (n / x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中 <code>(gx - x + 1) * (gx + x) / 2</code> 为<del>小学学过的</del>公差为 $1$ 等差数列求和。</p>
+<h3 id="狄利克雷卷积"><a href="#狄利克雷卷积" class="headerlink" title="狄利克雷卷积"></a>狄利克雷卷积</h3><p>对于数论函数 $f,g$ ,其卷积为<br>$$<br>(f*g)(n)=\sum_{d|n}f(d)g(\dfrac{n}{d})<br>$$<br>且满足</p>
+<ul>
+<li>交换律 $f\ast g=g\ast f$</li>
+<li>结合律 $(f\ast g)\ast h=f\ast (g\ast h)$</li>
+<li>分配律 $f\ast g+f\ast h=f\ast (g+h)$</li>
+</ul>
+<h4 id="常见等式"><a href="#常见等式" class="headerlink" title="常见等式"></a>常见等式</h4><ul>
+<li>$\sigma_0=1\ast 1$</li>
+<li>$\sigma_1=I\ast 1$</li>
+<li>$\epsilon=\mu \ast  1$</li>
+<li>$I=\varphi\ast 1$</li>
+<li>$\varphi=I\ast \mu$</li>
+</ul>
+<h2 id="定理"><a href="#定理" class="headerlink" title="定理"></a>定理</h2><p>$$<br>f = g \ast  1 \Leftrightarrow g = f \ast  \mu<br>$$<br>即<br>$$<br>f(n) = \sum_{d|n}g(d) \Leftrightarrow g(n)=\sum_{d|n}f(d)\mu(\dfrac{n}{d})<br>$$</p>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p>若无特别说明，假定 $n \le m$。</p>
+<h3 id="I"><a href="#I" class="headerlink" title="I"></a>I</h3><p>多组询问，求<br>$$<br>\sum_{i=1}^n\sum_{j=1}^m[\text{gcd}(i,j)=1]<br>$$<br>其中 $T \le 10^4, n,m \le 10^7$。</p>
+<p>由 $\epsilon=\mu \ast  1$ 可知<br>$$<br>= \sum_{i=1}^n\sum_{j=1}^m\sum_{d|\text{gcd}(i,j)}\mu(d)<br>$$<br>改变枚举顺序，先枚举 $d$，并由 $d|\text{gcd}(i,j)$ 可知，$d|i$ 且 $d|j$，则<br>$$<br>= \sum_{d=1}^n\mu(d)\sum_{i=1}^{\left\lfloor\frac{n}{d}\right\rfloor}\sum_{j=1}^{\left\lfloor\frac{m}{d}\right\rfloor}1<br>$$</p>
+<p>$$<br>=\sum_{d=1}^n\mu(d)\left\lfloor\dfrac{n}{d}\right\rfloor\left\lfloor\dfrac{m}{d}\right\rfloor<br>$$<br>至此，对于左边，可线性预处理 $\mu(n)$ 的前缀和，对于右边，数论分块即可。时间复杂度为 $O(n+T\sqrt{n})$</p>
+<h4 id="代码实现-1"><a href="#代码实现-1" class="headerlink" title="代码实现"></a>代码实现</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> n, p[MAXN], cnt, m, d, T; ll mu[MAXN] = &#123;<span class="number">0</span>, <span class="number">1</span>&#125;; <span class="keyword">bool</span> v[MAXN];</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= MAXN - <span class="number">5</span>; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!v[i]) p[++cnt] = i, mu[i] = - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= cnt &amp;&amp; p[j] * i &lt;= MAXN - <span class="number">5</span>; j++) &#123;</span><br><span class="line">        v[i * p[j]] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (i % p[j] == <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line">        mu[i * p[j]] = -mu[i];</span><br><span class="line">    &#125; &#125; <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) mu[i] += mu[i - <span class="number">1</span>];</span><br><span class="line"><span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;T);</span><br><span class="line"><span class="keyword">while</span> (T--) &#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d%d&quot;</span>, &amp;m, &amp;n, &amp;d); </span><br><span class="line">    <span class="keyword">if</span> (m &gt; n) std::<span class="built_in">swap</span>(m, n); ll sum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> x = <span class="number">1</span>, gx; x &lt;= m; x = gx + <span class="number">1</span>) &#123;</span><br><span class="line">        gx = std::<span class="built_in">min</span>(m / (m / x), n / (n / x));</span><br><span class="line">        sum += (mu[gx] - mu[x - <span class="number">1</span>]) * (m / x / d) * (n / x / d);</span><br><span class="line">    &#125; <span class="built_in">printf</span>(<span class="string">&quot;%lld\n&quot;</span>, sum);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="II"><a href="#II" class="headerlink" title="II"></a>II</h3><p>多组询问，求<br>$$<br>\sum_{i=1}^n\sum_{j=1}^m\text{gcd}(i,j)<br>$$<br>其中 $T \le 10^4, n,m \le 10^7$<br>由 $I=\varphi \ast  1$，得<br>$$<br>= \sum_{i=1}^n\sum_{j=1}^m\sum_{d|\text{gcd}(i,j)}\varphi(d)<br>$$<br>同 I，最后可得<br>$$<br>=\sum_{d=1}^n\varphi(d)\left\lfloor\dfrac{n}{d}\right\rfloor\left\lfloor\dfrac{m}{d}\right\rfloor<br>$$<br>做法和时间复杂度同 I</p>
+<h3 id="III"><a href="#III" class="headerlink" title="III"></a>III</h3><p>多组询问，求<br>$$<br>\sum_{i=1}^n\sum_{j=1}^m[\text{gcd}(i,j)=d]<br>$$<br>其中 $T \le 10^4, n,m,d \le 10^7$<br>考虑将 $d$ 变为 $1$ 后再进行转化。由最大公约数的定义可知 $\text{gcd}(\dfrac{i}{d},\dfrac{j}{d})=1$，也就相当于 $i,j$ 枚举的上界发生了变化，可得<br>$$<br>=\sum_{i=1}^{\frac{n}{d}}\sum_{j=1}^{\frac{m}{d}}[\text{gcd}(i,j)=1]<br>$$<br>同 I，最后亦可得<br>$$<br>=\sum_{x=1}^{\left\lfloor\frac{n}{d}\right\rfloor}\mu(x)\left\lfloor\dfrac{n}{xd}\right\rfloor\left\lfloor\dfrac{m}{xd}\right\rfloor<br>$$<br>做法和时间复杂度同 I</p>
+<h3 id="IV"><a href="#IV" class="headerlink" title="IV"></a>IV</h3><p>多组询问，求<br>$$<br>\sum_{i=1}^n\sum_{j=1}^m\text{lcm}(i,j)<br>$$<br>其中 $T \le 10^4, n,m \le 10^7$<br>由<del>小学学过的</del> $(a, b)\times[a,b]=a\times b$ 可知<br>$$<br>=\sum_{i=1}^n\sum_{j=1}^m\dfrac{ij}{\text{gcd}(i,j)}<br>$$<br>设 $d=\text{gcd}(i,j),i=i’d, j=j’d$，显然有 $\text{gcd}(i’,j’)=1$，则<br>$$<br>=\sum_{i=1}^n\sum_{j=1}^m\sum_{d|i,d|j,\text{gcd}(i’,j’)=1}\dfrac{ij}{d}<br>$$</p>
+<p>$$<br>=\sum_{i=1}^n\sum_{j=1}^m\sum_{d|i,d|j,\text{gcd}(i’,j’)=1}i’j’d<br>$$<br>同 I，改变枚举顺序，先枚举 $d$，则有（为书写美观，记 $i=i’,j=j’$）<br>$$<br>=\sum_{d=1}^nd\sum_{i=1}^{\left\lfloor\frac{n}{d}\right\rfloor}\sum_{j=1}^{\left\lfloor\frac{m}{d}\right\rfloor}[\text{gcd}(i,j)=1]ij<br>$$<br>同理<br>$$<br>=\sum_{d=1}^nd\sum_{x=1}^{\left\lfloor\frac{n}{d}\right\rfloor}\mu(x)\sum_{x|i}\sum_{x|j}ij<br>$$<br>再设 $i=i’’x,j=j’’x$，则有<br>$$<br>=\sum_{d=1}^nd\sum_{x=1}^{\left\lfloor\frac{n}{d}\right\rfloor}x^2\mu(x)\sum_{i’’=1}^{\left\lfloor\frac{n}{xd}\right\rfloor}\sum_{j’’=1}^{\left\lfloor\frac{m}{xd}\right\rfloor}i’’j’’<br>$$<br>不妨设 $f(n)=\sum\limits_{i=1}^ni=\dfrac{n(n+1)}{2}$，则有<br>$$<br>=\sum_{d=1}^nd\sum_{x=1}^{\left\lfloor\frac{n}{d}\right\rfloor}x^2\mu(x)f(\left\lfloor\dfrac{n}{xd}\right\rfloor)f(\left\lfloor\frac{m}{xd}\right\rfloor)<br>$$<br>至此，可以线性预处理 $f(n)$ 和 $g(n)=\sum\limits_{i=1}^{n}i^2\mu(i)$ 的前缀和。再通过数论分块即可解决。时间复杂度同 I。</p>
+<h4 id="代码实现-2"><a href="#代码实现-2" class="headerlink" title="代码实现"></a>代码实现</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> n, m, cnt, ans;</span><br><span class="line"><span class="keyword">int</span> f[MAXN], p[MAXN], sum[MAXN];</span><br><span class="line"><span class="keyword">bool</span> v[MAXN];</span><br><span class="line"><span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;n, &amp;m); f[<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">if</span> (n &lt; m) <span class="built_in">swap</span>(n, m);</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!v[i]) v[i] = <span class="number">1</span> , f[i] = (<span class="number">1</span> - i + MOD) % MOD, p[++cnt] = i;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= cnt &amp;&amp; p[j] * i &lt;= n; j++) &#123;</span><br><span class="line">        v[i * p[j]] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (i % p[j]) f[i * p[j]] = <span class="number">1ll</span> * f[i] * f[p[j]] % MOD;</span><br><span class="line">        <span class="keyword">else</span> &#123;f[i * p[j]] = f[i]; <span class="keyword">break</span>;&#125;</span><br><span class="line">    &#125; &#125; <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++)</span><br><span class="line">    f[i] = (f[i - <span class="number">1</span>] + <span class="number">1ll</span> * i * f[i] % MOD) %MOD, sum[i] = (<span class="number">1ll</span> * sum[i - <span class="number">1</span>] + i) % MOD;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> x = <span class="number">1</span>, gx; x &lt;= m; x = gx + <span class="number">1</span>) &#123;</span><br><span class="line">    gx = <span class="built_in">min</span>(m / (m / x), n / (n / x));</span><br><span class="line">    ans = (ans + <span class="number">1ll</span> * (f[gx] - f[x - <span class="number">1</span>] + MOD) % MOD * sum[n / x] % MOD * sum[m / x] % MOD) % MOD;</span><br><span class="line">&#125; <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, ans);</span><br></pre></td></tr></table></figure>
+<h2 id="例题"><a href="#例题" class="headerlink" title="例题"></a>例题</h2><h3 id="LG2257"><a href="#LG2257" class="headerlink" title="LG2257"></a><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P2257">LG2257</a></h3><p>多组数据，求<br>$$<br>\sum_{p\in\text{prime}}\sum_{i=1}^n\sum_{j=1}^m[\text{gcd}(i,j)=p]<br>$$<br>其中 $T \le 10^4, n,m \le 10^7$。<br>由应用 III 可得<br>$$<br>=\sum_{p\in\text{prime}}\sum_{x=1}^{\left\lfloor\frac{n}{p}\right\rfloor}\mu(x)\left\lfloor\dfrac{n}{xp}\right\rfloor\left\lfloor\dfrac{m}{xp}\right\rfloor<br>$$<br>设 $T = xp$，可得 $p|T$，改变枚举顺序，先枚举 $T$，可得<br>$$<br>=\sum_{T=1}^n\sum_{p|T, p \in \text{prime}}\mu(\dfrac{T}{P})\left\lfloor\dfrac{n}{T}\right\rfloor\left\lfloor\dfrac{m}{T}\right\rfloor<br>$$</p>
+<p>$$<br>=\sum_{T=1}^n \left\lfloor\dfrac{n}{T}\right\rfloor\left\lfloor\dfrac{m}{T}\right\rfloor\sum_{p|T, p \in prime}\mu(\dfrac{T}{P})<br>$$<br>至此，右边可以枚举质数的倍数，左边数论分块即可。时间复杂度为 $ O(n + \pi(n)\ln n + T\sqrt{n})$。</p>
+<h4 id="代码实现-3"><a href="#代码实现-3" class="headerlink" title="代码实现"></a>代码实现</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> p[MAXN], mu[MAXN] = &#123;<span class="number">0</span>, <span class="number">1</span>&#125;, cnt, f[MAXN];</span><br><span class="line"><span class="keyword">bool</span> v[MAXN];</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= MAXN - <span class="number">5</span>; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!v[i]) mu[i] = <span class="number">-1</span>, p[++cnt] = i;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= cnt &amp;&amp; i * p[j] &lt;= MAXN - <span class="number">5</span>; j++) &#123;</span><br><span class="line">        v[i * p[j]] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (i % p[j]) mu[i * p[j]] = -mu[i];</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">break</span>;</span><br><span class="line">    &#125; &#125;<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= cnt; i++)</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j * p[i] &lt;= MAXN - <span class="number">5</span>; j++) f[j * p[i]] += mu[j];</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= MAXN - <span class="number">5</span>; i++) f[i]+= f[i - <span class="number">1</span>];</span><br><span class="line"><span class="keyword">int</span> T = <span class="built_in">read</span>(); </span><br><span class="line"><span class="keyword">while</span> (T--) &#123;</span><br><span class="line">    <span class="keyword">int</span> n = <span class="built_in">read</span>(), m = <span class="built_in">read</span>(); ll ans = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (n &gt; m) n ^= m ^= n ^= m;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>, gx; i &lt;= n; i = gx + <span class="number">1</span>) &#123;</span><br><span class="line">        gx = <span class="built_in">min</span>(n / (n / i), m / (m / i));</span><br><span class="line">        ans += <span class="number">1ll</span> * (f[gx] - f[i - <span class="number">1</span>]) * (n / i) * (m / i);</span><br><span class="line">    &#125; <span class="built_in">write</span>(ans);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="CF1139D"><a href="#CF1139D" class="headerlink" title="CF1139D"></a><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/CF1139D">CF1139D</a></h3><p>对一个数列不断添加 $[1,n]$ 的数，直到数列中所有数的 $\text{gcd}=1$ 为止，求期望长度。$n \le 10^5$。</p>
+<p>考虑 $\text{dp}$，设 $f_i$ 为当前数列 $\text{gcd}=i$ 时变为 $\text{gcd}=1$ 所用的期望次数。显然 $f_1=0$。则答案<br>$$<br>ans=\dfrac{1}{n}\sum_{i=1}^nf_i+1<br>$$<br>其中 $1$ 为第一个数就为 $1$ 的情况，然后枚举 $[2,n]$ 的数，每一个数都有 $\dfrac{1}{n}$ 的概率选到。<br>考虑状态转移方程<br>$$<br>f_i=\dfrac{1}{n}\sum_{j=1}^{n}f_{\text{gcd}(i,j)}+1<br>$$<br>其中 $1$ 表示转移时的贡献，再枚举下一个数，则所对应的状态为 $f_{\text{gcd}(d,i)}$，而每一个数都有 $\dfrac{1}{n}$ 的概率选到。<br>考虑莫比乌斯反演，先枚举 $d=\text{gcd}(i, j)$，化分母得<br>$$<br>nf_i=\sum_{d|i}f_d\sum_{j=1}^{n}[\text{gcd}(i,j)=d]+n<br>$$<br>由应用 III，<br>$$<br>nf_i=\sum_{d|i}f_d\sum_{j=1}^{\left\lfloor\frac{n}{d}\right\rfloor}[\text{gcd}(\dfrac{i}{d},j)=1]+n<br>$$</p>
+<p>$$<br>nf_i=\sum_{d|i}f_d\sum_{j=1}^{\left\lfloor\frac{n}{d}\right\rfloor}\sum_{x|\text{gcd}(\frac{i}{d},j)}\mu(x)+n<br>$$</p>
+<p>$$<br>nf_i=\sum_{d|i}f_d\sum_{x=1}^n\mu(x)\left\lfloor\dfrac{n}{xd}\right\rfloor+n<br>$$<br>设 $T=xd$，改变枚举顺序，先枚举 $T$ 得<br>$$<br>nf_i=\sum_{T|i}\left\lfloor\dfrac{n}{T}\right\rfloor\sum_{d|T}f_d\mu(\dfrac{T}{d})+n<br>$$<br>特别的，当 $T=d=i$ 时，等式右边含有未知量，考虑将其移至左边<br>$$<br>nf_i=\sum_{T|i}\left\lfloor\dfrac{n}{T}\right\rfloor\sum_{d|T,d\not=i}f_d\mu(\dfrac{T}{d})+n + \mu(1)f_i\left\lfloor\dfrac{n}{i}\right\rfloor<br>$$</p>
+<p>$$<br>(n-\left\lfloor\dfrac{n}{i}\right\rfloor)f_i=\sum_{T|i}\left\lfloor\dfrac{n}{T}\right\rfloor\sum_{d|T,d\not=i}\mu(\dfrac{T}{d})f_d+n<br>$$<br>至此，可以预处理每一个数的因子和 $\mu(n)$ 的前缀和，递推即可。此外，由于涉及到除法运算，要线性预处理逆元。时间复杂度为 $O(n\log^2n)$</p>
+<h4 id="代码实现-4"><a href="#代码实现-4" class="headerlink" title="代码实现"></a>代码实现</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> n, v[MAXN], p[MAXN], mu[MAXN], m, inv[MAXN], f[MAXN], ans;</span><br><span class="line">std::vector&lt;<span class="keyword">int</span>&gt; a[MAXN];</span><br><span class="line"><span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;n); mu[<span class="number">1</span>] = inv[<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!v[i]) p[++m] = i, mu[i] = <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= m &amp;&amp; i * p[j] &lt;= n; j++) &#123;</span><br><span class="line">        v[i * p[j]] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (i % p[j]) mu[i * p[j]] = -mu[i];</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">break</span>;</span><br><span class="line">    &#125; &#125; <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++)</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = i; j &lt;= n; j += i) a[j].<span class="built_in">push_back</span>(i);</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; i++) inv[i] = <span class="number">1ll</span>* (P - P / i) * inv[P % i] % P;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; i++) &#123;</span><br><span class="line">    f[i] = n;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">size_t</span> j = <span class="number">0</span>, sz = a[i].<span class="built_in">size</span>(); j &lt; sz; j++) &#123;</span><br><span class="line">        <span class="keyword">int</span> T = a[i][j], res1 = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>, sz1 = a[T].<span class="built_in">size</span>(); k &lt; sz1; k++)</span><br><span class="line">            <span class="keyword">if</span> (a[T][k] != i)</span><br><span class="line">                res1 = (<span class="number">1ll</span> * res1 + mu[T / a[T][k]] * f[a[T][k]] + P) % P;</span><br><span class="line">        f[i] = (f[i] + <span class="number">1ll</span> * res1 * (n / T) % P) % P;</span><br><span class="line">    &#125; f[i] = <span class="number">1ll</span> * f[i] * inv[n - n / i] % P;</span><br><span class="line">    ans = (ans + f[i]) % P;</span><br><span class="line">&#125; <span class="built_in">printf</span>(<span class="string">&quot;%lld&quot;</span>, <span class="number">1ll</span> * ans * inv[n] % P +<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+<h4 id="Another-Solution"><a href="#Another-Solution" class="headerlink" title="Another Solution"></a>Another Solution</h4><p>$$<br>\begin{aligned}<br>E(X)&amp;=\sum_{i\ge 1}P(X=i)i\<br>&amp;=\sum_{i\ge 1}P(X=1)\sum_{j=1}^i1\<br>&amp;=\sum_{j\ge 1}\sum_{i\ge j}P(X=i)\<br>&amp;=\sum_{i\ge 1}P(X\ge i)\<br>&amp;=1-\sum_{i\ge 1}P(X&gt;i)<br>\end{aligned}<br>$$<br>$$<br>\begin{aligned}<br>P(X&gt;1)&amp;=1-P(X=1)\<br>&amp;=1-\dfrac{[\sum\cdots\sum gcd=1]}{m^i}<br>&amp;=1-\dfrac{\sum\mu(d)\left\lfloor\frac md\right\rfloor^i}{m^i}<br>\end{aligned}<br>$$</p>
+<h3 id="LG4449"><a href="#LG4449" class="headerlink" title="LG4449"></a><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P4449">LG4449</a></h3><p>求<br>$$<br>\sum_{i=1}^n\sum_{j=1}^m\text{gcd}(i,j)^k<br>$$<br>其中 $T \le 10^3, n,m,k \le 10^6$</p>
+<p>设 $id_k = f(n) \ast  1$，则 $f(n) = id_k \ast  \mu$，得到<br>$$<br>=\sum_{i=1}^n\sum_{j=1}^m\sum_{d|\text{gcd}(i,j)}f(d)<br>$$<br>由应用 I，得<br>$$<br>=\sum_{d=1}^nf(d)\left\lfloor\dfrac{n}{d}\right\rfloor\left\lfloor\dfrac{m}{d}\right\rfloor<br>$$</p>
+<p>$$<br>=\sum_{d=1}^n\sum_{x|d}x^k\mu(\dfrac{d}{x})\left\lfloor\dfrac{n}{d}\right\rfloor\left\lfloor\dfrac{m}{d}\right\rfloor<br>$$</p>
+<p>$$<br>=\sum_{d=1}^n\left\lfloor\dfrac{n}{d}\right\rfloor\left\lfloor\dfrac{m}{d}\right\rfloor\sum_{x|d}x^k\mu(\dfrac{d}{x})<br>$$<br>至此，由于右半部分相当于 $f(d)$，是一个积性函数，可以在线性时间内求值并算出前缀和。左半部分可以用数论分块求得。时间复杂度为 $O((n + T\sqrt{n})\log k)$。<br>$$<br>f(x)=\begin{cases}1&amp;x=1\\p^k-1&amp;p\in\text{prime}\end{cases}<br>$$</p>
+<p>$$<br>f(xp)=\begin{cases}f(x)f(p)&amp;\text{gcd}(x,p)=1\\p^kf(x)&amp;\text{gcd}(x,p)\not=1\end{cases}\quad  p\in\text{prime}<br>$$</p>
+<h4 id="代码实现-5"><a href="#代码实现-5" class="headerlink" title="代码实现"></a>代码实现</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> k, T, v[MAXN], p[MAXN], m; ll f[MAXN];</span><br><span class="line"><span class="built_in">read</span>(T, k); f[<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= MAXN - <span class="number">5</span>; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!v[i]) p[++m] = i, f[i] = (<span class="built_in">fpow</span>(i, k) - <span class="number">1</span> + MOD) % MOD;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= m &amp;&amp; p[j] * i &lt;= MAXN - <span class="number">5</span>; j++) &#123;</span><br><span class="line">        v[i * p[j]] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (i % p[j] == <span class="number">0</span>) &#123;</span><br><span class="line">            f[i * p[j]] = f[i] * (f[p[j]] + <span class="number">1</span>) % MOD;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125; f[i * p[j]] = f[i] * f[p[j]] % MOD;</span><br><span class="line">    &#125; &#125; <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= MAXN - <span class="number">5</span>; i++) f[i] = (f[i - <span class="number">1</span>] + f[i]) % MOD;</span><br><span class="line"><span class="keyword">while</span> (T--) &#123;</span><br><span class="line">    <span class="keyword">int</span> x, y; <span class="built_in">read</span>(x, y); ll ans = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (x &gt; y) <span class="built_in">swap</span>(x, y);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>, gx; i &lt;= x; i = gx + <span class="number">1</span>) &#123;</span><br><span class="line">        gx = <span class="built_in">min</span>(x / (x / i), y / (y / i));</span><br><span class="line">        ans = (ans + (f[gx] - f[i - <span class="number">1</span>] + MOD) % MOD * (x / i) % MOD * (y / i) % MOD) % MOD;</span><br><span class="line">    &#125; <span class="built_in">write</span>(ans);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/noip2021/" rel="prev" title="NOIP 2021 游记&题解">
+      <i class="fa fa-chevron-left"></i> NOIP 2021 游记&题解
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/ioi18-d1t3/" rel="next" title="IOI 2018 Day1 T3 Werewolf Solution">
+      IOI 2018 Day1 T3 Werewolf Solution <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86"><span class="nav-text">前置知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%AF%E6%80%A7%E5%87%BD%E6%95%B0"><span class="nav-text">积性函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%A7%E8%B4%A8"><span class="nav-text">性质</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E7%A7%AF%E6%80%A7%E5%87%BD%E6%95%B0"><span class="nav-text">常见的积性函数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E8%AE%BA%E5%88%86%E5%9D%97"><span class="nav-text">数论分块</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-text">代码实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8B%84%E5%88%A9%E5%85%8B%E9%9B%B7%E5%8D%B7%E7%A7%AF"><span class="nav-text">狄利克雷卷积</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%AD%89%E5%BC%8F"><span class="nav-text">常见等式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E7%90%86"><span class="nav-text">定理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8"><span class="nav-text">应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#I"><span class="nav-text">I</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0-1"><span class="nav-text">代码实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#II"><span class="nav-text">II</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#III"><span class="nav-text">III</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IV"><span class="nav-text">IV</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0-2"><span class="nav-text">代码实现</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BE%8B%E9%A2%98"><span class="nav-text">例题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LG2257"><span class="nav-text">LG2257</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0-3"><span class="nav-text">代码实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CF1139D"><span class="nav-text">CF1139D</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0-4"><span class="nav-text">代码实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Another-Solution"><span class="nav-text">Another Solution</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LG4449"><span class="nav-text">LG4449</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0-5"><span class="nav-text">代码实现</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Henry Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">赣ICP备2021010298号 </a>
+      <img src="/images/beian.png" style="display: inline-block;">
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Henry Chen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '3c3c9f872bfe11efa50d',
+      clientSecret: '756c743d23b64daf90b7fc9ec1104f968a743380',
+      repo        : 'hexo-comment',
+      owner       : 'Henry-Chen0227',
+      admin       : ['Henry-Chen0227'],
+      id          : '2e7353a9128750aff91106ab2ea4ae89',
+        language: 'zh-CN',
+      distractionFreeMode: false
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
