@@ -522,6 +522,7 @@
     <url>/BZOJ3309/</url>
     <content><![CDATA[<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>对于 $n$ 的唯一分解 $n=\prod p^c$，定义 $f(n)=\max\{c\}$。</p>
 <p>$T$ 组询问，给定 $n,m$，求<br>$$<br>\sum_{i=1}^n\sum_{i=1}^mf(\gcd(i,j))<br>$$<br>$T\le 10^4$，$n,m\le 10^7$</p>
+<span id="more"></span>
 <h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><p>考虑莫比乌斯反演，原式可化为<br>$$<br>\sum_{d=1}^nf(d)\sum_{i=1}^{\left\lfloor\frac nd\right\rfloor}\sum_{i=1}^{\left\lfloor\frac md\right\rfloor}[\gcd(i,j)=1]<br>$$<br>$$<br>\sum_{d=1}^nf(d)\sum_{x|d}\mu(x)\left\lfloor\frac {n}{dx}\right\rfloor\left\lfloor\frac {m}{dx}\right\rfloor<br>$$<br>$$<br>\sum_{T=1}^n\left\lfloor\frac nT\right\rfloor\left\lfloor\frac mT\right\rfloor\sum_{d|T}f(d)\mu\left(\frac Td\right)<br>$$<br>令<br>$$<br>g(n)=\sum_{d|n}f(d)\mu\left(\frac nd\right)<br>$$<br>将 $n,d$ 唯一分解 $n=\prod\limits_{i=1}^kp_i^{x_i},d=\prod\limits_{i=1}^kp_i^{y_i}$。则 $\mu\left(\dfrac nd\right)$ 取到非零值当且仅当<br>$$<br>\forall i\in[1,k],y_i-x_i\le 1<br>$$<br>设 $a=\max\{c_i\}$，则 $f(d)=a$ 或 $f(d)=a-1$。</p>
 <p>当 $f(d)=a$ 时，设有 $q$ 个质因数的指数为 $a$，则<br>$$<br>g(n)=a\sum_{d|n}\mu\left(\frac nd\right)=a\sum_{i=1}^q\binom{q}{i}(-1)^{q-i}\sum_{j=0}^{k-q}\binom{k-q}{j}(-1)^j<br>$$</p>
 <ul>
@@ -536,6 +537,44 @@
 </ul>
 <p>故<br>$$<br>g(n)=\begin{cases}<br>(-1)^{k+1}&amp;k=q\\<br>0&amp;k\neq q<br>\end{cases}<br>$$<br>原式<br>$$<br>\sum_{T=1}^n\left\lfloor\frac nT\right\rfloor\left\lfloor\frac mT\right\rfloor g(T)<br>$$<br>可以数论分块简单解决。</p>
 <p>考虑如何筛出 $g$，考虑 $k=q=1$ 的情况，此时与 $\mu$ 类似，可以直接线筛，对于 $k&gt;1$ 的部分可以 $O(n\ln n)$ 小常数枚举。总时间复杂度 $O(n\ln n+T\sqrt n)$。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>Atcoder Beginner Contest 257 Ex</title>
+    <url>/abc257-ex/</url>
+    <content><![CDATA[<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>给定 $N$ 个 $6$ 面色子，价值为 $C_i$，每一面的概率均为 $\dfrac 16$，且有不同的权值 $A_{i,j}$。</p>
+<p>先从中选 $K$ 个，</p>
+<p>考虑一个色子的概率生成函数<br>$$<br>f(z)=\frac 16\sum_{i=1}^6z^{A_i}<br>$$</p>
+<!-- $$
+f'(z)=\\frac 16\\sum_{i=1}^6A_iz^{A_i-1}
+$$
+$$
+f''(z)=\\frac 16\\sum_{i=1}^6A_i(A_i-1)z^{A_i-2}
+$$ -->
+<p>则所有色子的概率生成函数为<br>$$<br>F(z)=\prod_{i=1}^K f(z)=\sum_iP(X=i)z^i<br>$$<br>考虑其平方的概率生成函数<br>$$<br>G(z)=\sum_iP(X=i)z^{i^2}<br>$$<br>对其求导得<br>$$<br>G’(z)=\sum_iP(X=i)i^2z^{i^2-1}=(zF’(z))’=F’(z)+zF’’(z)<br>$$<br>则期望<br>$$<br>\begin{aligned}<br>E(X^2)&amp;=G’(1)=F’(1)+F’’(1)\\<br>&amp;=\sum_{i=1}^Kf_i’(1)+2\sum_{i=1}^{K-1}\sum_{i=j+1}^{K}f’<em>i(1)f’<em>j(1)+\sum</em>{i=1}^K f’’<em>i(1)\\<br>&amp;=\frac{1}{36}\left(\sum</em>{i=1}^K\sum</em>{j=1}^6 A_j\right)^2+\frac{1}{36}\sum_{i=1}^K\left(6A_j^2-\left(\sum_{j=1}^6 A_j\right)^2\right)<br>\end{aligned}<br>$$<br>故题目转化为给定 $N$ 个平面向量 $(x_i,y_i)$，从其中选 $K$ 个使得 $\left(\sum x_i\right)^2+\sum y_i$ 最大。</p>
+<blockquote>
+<p><strong>定理</strong> 令答案集合为 $S$，则 $\exist c\in \mathbb R,\forall i\in S,j\not\in S,cx_i+y_i\ge cx_j+y_j$。</p>
+</blockquote>
+<blockquote>
+<p><strong>证明</strong></p>
+<blockquote>
+<p><strong>引理 1</strong><br>对于给定的点集 $T$，$x^2+y$ 最大的点一定在 $T$ 构成的凸包 $P$ 上。</p>
+</blockquote>
+<blockquote>
+<p><strong>引理 1 证明</strong></p>
+<p>考虑线段 $y=kx+b$ 上的一点 $(x,y)$，$x^2+y=x^2+kx+b$ 构成一个开口向上的抛物线，在线段端点处取到最值。</p>
+<p>对于凸包内一点 $v\not\in P,\exist u\in P,s.t.$ 经过 $u,v$ 的直线交凸包于 $p$。如图所示，根据以上的结论，对于 $f(v)=x^2+y$，必然有 $f(E)&lt; f(F)&lt; f(C),f(D)$<br><img src="/images/abc257ex.svg"></p>
+</blockquote>
+<blockquote>
+<p><strong>引理 2</strong> $\exist c\in \mathbb R,cx_i+y_i$ 最大 $\iff(x_i,y_i)$ 在凸包上。</p>
+</blockquote>
+<blockquote>
+<p><strong>引理 2 证明</strong></p>
+<p>考虑直线 $cx+y+b=0$，即 $c$ 决定了直线了斜率，在直线上下移动时只有在凸包处取到最值。</p>
+</blockquote>
+<p>考虑 $K$ 个向量组成的 $\dbinom{N}{K}$ 个向量和，选择一个向量使 $x^2+y$ 最大，根据引理 1、2，即可得证。</p>
+</blockquote>
+<p>这个性质等价于答案点集在一条直线的同一侧，将所有向量两两相减得到的 $O(N^2)$ 条直线的斜率即为我们需要枚举的 $c$ 值，极角排序不难解决，时间复杂度 $O(N^2\log N)$。</p>
 ]]></content>
   </entry>
 </search>
