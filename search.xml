@@ -26,8 +26,9 @@
     <title>Atcoder Beginner Contest 257 Ex</title>
     <url>/abc257-ex/</url>
     <content><![CDATA[<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>给定 $N$ 个 $6$ 面色子，价值为 $C_i$，每一面的概率均为 $\dfrac 16$，且有不同的权值 $A_{i,j}$。</p>
-<p>先从中选 $K$ 个，</p>
-<p>考虑一个色子的概率生成函数<br>$$<br>f(z)=\frac 16\sum_{i=1}^6z^{A_i}<br>$$</p>
+<p>从中选 $K$ 个色子，使得期望权值和的平方减去所选色子价值和最大。</p>
+<span id="more"></span>
+<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><p>考虑一个色子的概率生成函数<br>$$<br>f(z)=\frac 16\sum_{i=1}^6z^{A_i}<br>$$</p>
 <!-- $$
 f'(z)=\frac 16\sum_{i=1}^6A_iz^{A_i-1}
 $$
