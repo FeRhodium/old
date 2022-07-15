@@ -206,10 +206,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2022-07-14 21:01:51 / 修改时间：21:03:26" itemprop="dateCreated datePublished" datetime="2022-07-14T21:01:51+08:00">2022-07-14</time>
+              <time title="创建时间：2022-07-14 21:01:51" itemprop="dateCreated datePublished" datetime="2022-07-14T21:01:51+08:00">2022-07-14</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-15 11:08:59" itemprop="dateModified" datetime="2022-07-15T11:08:59+08:00">2022-07-15</time>
+              </span>
 
           
 
@@ -226,14 +232,14 @@
 <p>先从中选 $K$ 个，</p>
 <p>考虑一个色子的概率生成函数<br>$$<br>f(z)=\frac 16\sum_{i=1}^6z^{A_i}<br>$$</p>
 <!-- $$
-f'(z)=\\frac 16\\sum_{i=1}^6A_iz^{A_i-1}
+f'(z)=\frac 16\sum_{i=1}^6A_iz^{A_i-1}
 $$
 $$
-f''(z)=\\frac 16\\sum_{i=1}^6A_i(A_i-1)z^{A_i-2}
+f''(z)=\frac 16\sum_{i=1}^6A_i(A_i-1)z^{A_i-2}
 $$ -->
 <p>则所有色子的概率生成函数为<br>$$<br>F(z)=\prod_{i=1}^K f(z)=\sum_iP(X=i)z^i<br>$$<br>考虑其平方的概率生成函数<br>$$<br>G(z)=\sum_iP(X=i)z^{i^2}<br>$$<br>对其求导得<br>$$<br>G’(z)=\sum_iP(X=i)i^2z^{i^2-1}=(zF’(z))’=F’(z)+zF’’(z)<br>$$<br>则期望<br>$$<br>\begin{aligned}<br>E(X^2)&amp;=G’(1)=F’(1)+F’’(1)\\<br>&amp;=\sum_{i=1}^Kf_i’(1)+2\sum_{i=1}^{K-1}\sum_{i=j+1}^{K}f’<em>i(1)f’<em>j(1)+\sum</em>{i=1}^K f’’<em>i(1)\\<br>&amp;=\frac{1}{36}\left(\sum</em>{i=1}^K\sum</em>{j=1}^6 A_j\right)^2+\frac{1}{36}\sum_{i=1}^K\left(6A_j^2-\left(\sum_{j=1}^6 A_j\right)^2\right)<br>\end{aligned}<br>$$<br>故题目转化为给定 $N$ 个平面向量 $(x_i,y_i)$，从其中选 $K$ 个使得 $\left(\sum x_i\right)^2+\sum y_i$ 最大。</p>
 <blockquote>
-<p><strong>定理</strong> 令答案集合为 $S$，则 $\exist c\in \mathbb R,\forall i\in S,j\not\in S,cx_i+y_i\ge cx_j+y_j$。</p>
+<p><strong>定理</strong> 令答案集合为 $S$，则 $\exists c\in \mathbb R,\forall i\in S,j\not\in S,cx_i+y_i\ge cx_j+y_j$。</p>
 </blockquote>
 <blockquote>
 <p><strong>证明</strong></p>
@@ -243,10 +249,10 @@ $$ -->
 <blockquote>
 <p><strong>引理 1 证明</strong></p>
 <p>考虑线段 $y=kx+b$ 上的一点 $(x,y)$，$x^2+y=x^2+kx+b$ 构成一个开口向上的抛物线，在线段端点处取到最值。</p>
-<p>对于凸包内一点 $v\not\in P,\exist u\in P,s.t.$ 经过 $u,v$ 的直线交凸包于 $p$。如图所示，根据以上的结论，对于 $f(v)=x^2+y$，必然有 $f(E)&lt; f(F)&lt; f(C),f(D)$<br><img src="/images/abc257ex.svg"></p>
+<p>对于凸包内一点 $v\not\in P,\exists u\in P,s.t.$ 经过 $u,v$ 的直线交凸包于 $p$。如图所示，根据以上的结论，对于 $f(v)=x^2+y$，必然有 $f(E)&lt; f(F)&lt; f(C),f(D)$<br><img src="/images/abc257ex.svg"></p>
 </blockquote>
 <blockquote>
-<p><strong>引理 2</strong> $\exist c\in \mathbb R,cx_i+y_i$ 最大 $\iff(x_i,y_i)$ 在凸包上。</p>
+<p><strong>引理 2</strong> $\exists c\in \mathbb R,cx_i+y_i$ 最大 $\iff(x_i,y_i)$ 在凸包上。</p>
 </blockquote>
 <blockquote>
 <p><strong>引理 2 证明</strong></p>
