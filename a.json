@@ -1,0 +1,26 @@
+[
+    {
+        "key": "姓名 Name",
+        "content": "管理学院"
+    },
+    {
+        "key": "性别 Gender",
+        "content": "男 Male"
+    },
+    {
+        "key": "学号 Student ID",
+        "content": "124090066"
+    },
+    {
+        "key": "舞伴姓名 Dance Partner’s Name",
+        "content": "6"
+    },
+    {
+        "key": "舞伴性别 Dance Partner’s Gender",
+        "content": "女 Female"
+    },
+    {
+        "key": "舞伴学号 Dance Partner’s Student ID",
+        "content": "12"
+    }
+]
